@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "650119809081",
+    "firebase_url": "https://ivr-labs-39d1b.firebaseio.com",
+    "project_id": "ivr-labs-39d1b",
+    "storage_bucket": "ivr-labs-39d1b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:650119809081:android:59e47dff4f8bb6c1",
+        "android_client_info": {
+          "package_name": "com.example.ivr_labs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "650119809081-u135uo5d8sqechbguqtr45j1175maej2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoThZ8bztxaTuisP80HJimEBXxfQsUXnQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "650119809081-u135uo5d8sqechbguqtr45j1175maej2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
