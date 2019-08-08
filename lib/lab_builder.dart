@@ -92,6 +92,7 @@ class LabBuilder extends StatelessWidget {
         );
       }
     }
+
     if (Vars.paths.length > 0) {
       Navigator.push(
           context,
@@ -99,6 +100,7 @@ class LabBuilder extends StatelessWidget {
               builder: (context) => Exp_viewer(
                     labName: Vars.currentLabName,
                     paths: Vars.paths,
+                    documentsOfExperiments: documents,
                   )));
     }
   }

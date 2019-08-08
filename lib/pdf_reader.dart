@@ -10,6 +10,10 @@ import 'package:http/http.dart' as http;
 //this class returns a card when clicked opens the page PDF_Viewer_FAB
 
 class PDF_File_Reader extends StatelessWidget {
+  TextStyle loadingText = new TextStyle(
+    color: Colors.white,
+    fontSize: 18,
+  );
   List<Paths> paths;
   var context;
   PDF_File_Reader({
@@ -68,21 +72,8 @@ class PDF_File_Reader extends StatelessWidget {
     return FutureBuilder(
       future: _columnBuilder(),
       builder: (context, snapShot) {
-        if (snapShot.connectionState == ConnectionState.waiting ) {
-          return Column(
-            children: <Widget>[
-              Image.asset(
-                'lib/photos/lamb_loading.gif',
-                scale: .0001,
-              ),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Text('loading...'),
-                ),
-              )
-            ],
-          );
+        if (snapShot.connectionState == ConnectionState.waiting) {
+          return _myStack();
         }
         if (snapShot.hasError || snapShot.data == null) {
           return Image.asset(
@@ -180,6 +171,41 @@ class PDF_File_Reader extends StatelessWidget {
         }
       },
       trailing: YoutubeButton(url: object.video_link),
+    );
+  }
+
+  Widget _myStack() {
+    return Stack(
+      children: <Widget>[
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: Color(0xffb7B81A1),
+        ),
+        Positioned(
+          top: 0,
+          right: 0,
+          left: 0,
+          child: Image.asset(
+            'lib/photos/lamb_loading.gif',
+            scale: .0001,
+          ),
+        ),
+        Positioned(
+          bottom: 12,
+          left: 0,
+          right: 0,
+          child: Container(
+            width: double.infinity,
+            child: Center(
+              child: Text(
+                'loading...',
+                style: loadingText,
+              ),
+            ),
+          ),
+        )
+      ],
     );
   }
 }
