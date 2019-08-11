@@ -6,7 +6,7 @@ import 'package:ivr_labs/var.dart';
 
 class LabBuilder extends StatelessWidget {
   //some attributs ---------------------------------------------------------------------------------------------------
-  double width = 200, height = 200;
+  double width, height;
   String college, labName;
   var context;
   TextStyle labNameStyle = new TextStyle(
@@ -20,7 +20,18 @@ class LabBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     this.context = context;
+    _setWidthAndHeight();
     return _cardBuilder();
+  }
+
+  void _setWidthAndHeight() {
+    if (MediaQuery.of(context).orientation == Orientation.landscape) {
+      width = MediaQuery.of(context).size.width / 3 - 10;
+      height = MediaQuery.of(context).size.width / 3 - 10;
+    } else {
+      width = MediaQuery.of(context).size.width / 2 - 10;
+      height = MediaQuery.of(context).size.width / 2 - 10;
+    }
   }
 
   /*this method calls a StreemBuilder and returns a wrap 
@@ -183,7 +194,7 @@ class LabBuilder extends StatelessWidget {
   }
 
   //--------------------------------------------------------------------------------------------------------------------------------------
-  //extract the data from it's own path 
+  //extract the data from it's own path
   void _navigator(document) {
     Future<QuerySnapshot> d = Firestore.instance
         .collection(college)
