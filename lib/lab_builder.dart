@@ -167,7 +167,7 @@ class LabBuilder extends StatelessWidget {
           fit: BoxFit.fill,
           width: width,
           height: height,
-          placeholder: 'lib/photos/lab_loading.gif',
+          placeholder: 'lib/photos/lamb_loading.gif',
           image: path),
     );
   }

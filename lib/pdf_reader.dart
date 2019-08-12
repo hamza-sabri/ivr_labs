@@ -180,19 +180,20 @@ class PDF_File_Reader extends StatelessWidget {
         Container(
           width: double.infinity,
           height: double.infinity,
-          color: Color(0xffb7B81A1),
+          color: Color(0xff191F26),
         ),
         Positioned(
           top: 0,
           right: 0,
           left: 0,
+          bottom: 0,
           child: Image.asset(
-            'lib/photos/lamb_loading.gif',
+            'lib/photos/lab_loading.gif',
             scale: .0001,
           ),
         ),
         Positioned(
-          bottom: 12,
+          bottom: 22,
           left: 0,
           right: 0,
           child: Container(
