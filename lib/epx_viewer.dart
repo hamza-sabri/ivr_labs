@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:ivr_labs/paths.dart';
 import 'package:ivr_labs/pdf_reader.dart';
 
+/*
+this class is to show the list of cards with the expirements names and numbers 
+for each lab  
+*/
 class Exp_viewer extends StatelessWidget {
+  //some attributs ---------------------------------------------------------------------------------------------------
   List<DocumentSnapshot> documentsOfExperiments;
   String labName;
   List<Paths> paths;
@@ -12,6 +17,8 @@ class Exp_viewer extends StatelessWidget {
     this.labName,
     this.documentsOfExperiments,
   });
+  //-------------------------------------------------------------------------------------------------------------
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

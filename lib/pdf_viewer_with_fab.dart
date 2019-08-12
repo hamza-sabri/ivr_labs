@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:ivr_labs/pdf_viewer.dart';
 
+/*
+this class returns a card when clicked opens the page PDF_Viewer
+*/
 class PDF_Viewer_FAB extends StatefulWidget {
   String urlpath, appBarTitle, reportFilePath;
+
+  //-----------------------------------------------------------------------------------------------------------------------------------------
   PDF_Viewer_FAB({
     Key key,
     this.urlpath,
@@ -16,31 +21,33 @@ class PDF_Viewer_FAB extends StatefulWidget {
 
 class _PDF_ViewerState extends State<PDF_Viewer_FAB> {
   bool pdfGetted = false;
+
   @override
   Widget build(BuildContext context) {
-    return _normalScaffold();
-  }
-
-  Widget _normalScaffold() {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text(widget.appBarTitle),
+      centerTitle: true,
+      title: Text(widget.appBarTitle),
       ),
       body: _myBody(),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.amberAccent,
-        child: Image.asset(
-          'lib/photos/report.png',
-          scale: 14,
-        ),
-        onPressed: () {
-          _navigator();
-        },
-      ),
+      floatingActionButton: _myFAB(),
     );
   }
 
+  //this method creats the fab for the expirments
+  Widget _myFAB() {
+    return FloatingActionButton(
+      backgroundColor: Colors.amberAccent,
+      child: Image.asset(
+        'lib/photos/report.png',
+        scale: 14,
+      ),
+      onPressed: () {
+        _navigator();
+      },
+    );
+  }
+  //put the pdf reader on it's position
   Widget _myBody() {
     return Stack(
       children: <Widget>[
@@ -53,7 +60,8 @@ class _PDF_ViewerState extends State<PDF_Viewer_FAB> {
       ],
     );
   }
-
+  
+  //opens the PDFView for urlPath in the super class
   Widget _myPDFView() {
     return PDFView(
       filePath: widget.urlpath,
@@ -68,9 +76,9 @@ class _PDF_ViewerState extends State<PDF_Viewer_FAB> {
       },
     );
   }
-
+  
+  //this method navigates PDF_Viewer class
   void _navigator() {
-    print('my widget = ${widget.reportFilePath}');
     if (widget.reportFilePath == null) {
       return;
     }

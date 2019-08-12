@@ -15,7 +15,7 @@ this class is to get the data from the firebsae database and:
 */
 class LabBuilder extends StatelessWidget {
   //some attributs ---------------------------------------------------------------------------------------------------
-  double width, height;
+  double mySquare;
   String college;
   var context;
   TextStyle labNameStyle = new TextStyle(
@@ -34,13 +34,12 @@ class LabBuilder extends StatelessWidget {
     return _cardBuilder();
   }
 
+  //this method is to set the mySquare to the  size it should be depending on the screen size
   void _setWidthAndHeight() {
     if (MediaQuery.of(context).orientation == Orientation.landscape) {
-      width = MediaQuery.of(context).size.width / 3 - 10;
-      height = MediaQuery.of(context).size.width / 3 - 10;
+      mySquare = MediaQuery.of(context).size.width / 3 - 10;
     } else {
-      width = MediaQuery.of(context).size.width / 2 - 10;
-      height = MediaQuery.of(context).size.width / 2 - 10;
+      mySquare = MediaQuery.of(context).size.width / 2 - 10;
     }
   }
 
@@ -107,8 +106,8 @@ class LabBuilder extends StatelessWidget {
   Widget _myContainerWithNetworkImage(String path, String name, document) {
     return Container(
       color: Colors.black.withOpacity(0),
-      width: width,
-      height: height,
+      width: mySquare,
+      height: mySquare,
       child: Stack(
         children: <Widget>[
           _myLabCard(document, path),
@@ -126,8 +125,8 @@ class LabBuilder extends StatelessWidget {
     return Stack(
       children: <Widget>[
         Container(
-          width: width,
-          height: height,
+          width: mySquare,
+          height: mySquare,
           child: _myLabCardWithNoPhoto(document),
         ),
         _labName(name),
@@ -181,8 +180,8 @@ class LabBuilder extends StatelessWidget {
       borderRadius: BorderRadius.circular(15),
       child: FadeInImage.assetNetwork(
           fit: BoxFit.fill,
-          width: width,
-          height: height,
+          width: mySquare,
+          height: mySquare,
           placeholder: 'lib/photos/lamb_loading.gif',
           image: path),
     );

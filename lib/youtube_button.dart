@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:youtube_player/youtube_player.dart';
+import 'package:ivr_labs/youtube_page.dart';
 
-class YoutubeButton extends StatefulWidget {
+/* 
+this class is to creat the button that have the youtube logo on it 
+and give it the functionality to open the youtube player on its page
+*/
+
+class YoutubeButton extends StatelessWidget {
   String url;
+  var context;
+  YoutubeButton({this.url});
 
-  YoutubeButton({Key key, this.url}) : super(key: key);
+  //------------------------------------------------------------------------------------------------------------
 
-  @override
-  _YoutubeButtonState createState() => _YoutubeButtonState();
-}
-
-class _YoutubeButtonState extends State<YoutubeButton> {
   @override
   Widget build(BuildContext context) {
-    if (widget.url == null) {
+    this.context = context;
+    if (url == null) {
       return Text('');
     }
     return _myYoutubeButton();
   }
 
+  //this method returns the rasied button to open the youtube
   Widget _myYoutubeButton() {
     return RaisedButton(
       child: _myIcon(),
@@ -30,17 +34,7 @@ class _YoutubeButtonState extends State<YoutubeButton> {
     );
   }
 
-  void _myNavigatore() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => YoutubePage(
-          url: widget.url,
-        ),
-      ),
-    );
-  }
-
+  //customising the shape of the button
   Icon _myIcon() {
     return Icon(
       Icons.play_arrow,
@@ -48,24 +42,21 @@ class _YoutubeButtonState extends State<YoutubeButton> {
     );
   }
 
-  _myCustomShape() {
+  //customising the shape of the button
+  RoundedRectangleBorder _myCustomShape() {
     return RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(8),
     );
   }
-}
 
-class YoutubePage extends StatelessWidget {
-  String url;
-  YoutubePage({this.url});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: YoutubePlayer(
-        context: context,
-        source: url,
-        quality: YoutubeQuality.HD,
+  //this method is to navigate to the youtube player page
+  void _myNavigatore() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => YoutubePage(
+          url: url,
+        ),
       ),
     );
   }

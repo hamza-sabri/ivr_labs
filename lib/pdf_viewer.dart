@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 
+
+/*
+this class is to open the PDF files to read and interact 
+*/
+
+
 class PDF_Viewer extends StatefulWidget {
   String urlpath, appBarTitle;
   PDF_Viewer({
@@ -16,10 +22,6 @@ class _PDF_ViewerState extends State<PDF_Viewer> {
   bool pdfGetted = false;
   @override
   Widget build(BuildContext context) {
-    return _normalScaffold();
-  }
-
-  Widget _normalScaffold() {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -29,6 +31,7 @@ class _PDF_ViewerState extends State<PDF_Viewer> {
     );
   }
 
+  //put the pdf reader on it's position
   Widget _myBody() {
     return Stack(
       children: <Widget>[
@@ -42,6 +45,7 @@ class _PDF_ViewerState extends State<PDF_Viewer> {
     );
   }
 
+  //opens the PDFView for urlPath in the super class
   Widget _myPDFView() {
     return PDFView(
       filePath: widget.urlpath,
