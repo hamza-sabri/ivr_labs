@@ -24,8 +24,6 @@ dependencies:
   path_provider:
   youtube_player:
   http:
-  liquid_pull_to_refresh: ^1.1.1
-  animated_text_kit:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
@@ -48,10 +46,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-   - lib/photos/ivr.jpg
    - lib/photos/report.png
-   - lib/photos/loading.gif
-   - lib/photos/no_internet.gif
    - lib/photos/cat_loading.gif
    - lib/photos/lamb_loading.gif
    - lib/photos/lab_image.jpg

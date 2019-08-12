@@ -1,3 +1,9 @@
+/*
+this class is the core of the data 
+when extracted from the firebase it will be stored in 
+a list of objects from this class 
+so the structure of the data is formed the same as this class sugestes 
+*/
 class Paths {
   String expName, expNumber;
   String exp_link, report_link, video_link;
@@ -12,11 +18,4 @@ class Paths {
     this.video_link,
     this.fab_maker,
   });
-
-  String toString() {
-    String result =
-        'expName : $expName \nexpNumber : $expNumber \nexpLinke : $exp_link \neportLink : $report_link \nvideo : $video_link';
-
-    return result;
-  }
 }

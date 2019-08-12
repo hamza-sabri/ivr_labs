@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:ivr_labs/paths.dart';
-import 'package:ivr_labs/pdf_reader.dart';
 import 'lab_builder.dart';
 
+/*
+this class works as a contanier to 
+display the cards of the labs 
+*=> the cards in this class is for the Engineering collage
+*/
 class EngeneeringCollege extends StatelessWidget {
-  List<Paths> pathes = [];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -13,27 +13,44 @@ class YoutubeButton extends StatefulWidget {
 class _YoutubeButtonState extends State<YoutubeButton> {
   @override
   Widget build(BuildContext context) {
-    if(widget.url == null){
+    if (widget.url == null) {
       return Text('');
     }
+    return _myYoutubeButton();
+  }
+
+  Widget _myYoutubeButton() {
     return RaisedButton(
-      child: Icon(
-        Icons.play_arrow,
-        color: Colors.white,
-      ),
+      child: _myIcon(),
       color: Colors.red,
       onPressed: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => YoutubePage(
-                url: widget.url,
-              ),
-            ));
+        _myNavigatore();
       },
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
+      shape: _myCustomShape(),
+    );
+  }
+
+  void _myNavigatore() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => YoutubePage(
+          url: widget.url,
+        ),
       ),
+    );
+  }
+
+  Icon _myIcon() {
+    return Icon(
+      Icons.play_arrow,
+      color: Colors.white,
+    );
+  }
+
+  _myCustomShape() {
+    return RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
     );
   }
 }

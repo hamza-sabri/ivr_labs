@@ -4,18 +4,28 @@ import 'package:ivr_labs/epx_viewer.dart';
 import 'package:ivr_labs/paths.dart';
 import 'package:ivr_labs/var.dart';
 
+/* 
+this class is to get the data from the firebsae database and:
+1) crats the cards 
+2) add the photos to the cards if exist
+3) add the label name of the lab on the cards
+4) make it clickable so if it's clicked it navigate to the 
+   exp_viewer with the data as a list of pathes (the links of the pdf files)
+   and any other data needed 
+*/
 class LabBuilder extends StatelessWidget {
   //some attributs ---------------------------------------------------------------------------------------------------
   double width, height;
-  String college, labName;
+  String college;
   var context;
   TextStyle labNameStyle = new TextStyle(
     fontSize: 18,
     fontStyle: FontStyle.italic,
     color: Colors.white,
   );
-  LabBuilder({this.college, this.labName});
+  LabBuilder({this.college});
   //------------------------------------------------------------------------------------------------------------------
+
   //the build method
   @override
   Widget build(BuildContext context) {
@@ -55,6 +65,7 @@ class LabBuilder extends StatelessWidget {
       },
     );
   }
+  //----------------------------------------------------------------------------------------------------------------
 
   /*_myWrap() takes the snapShots of labs from the database 
     then returns them in wrap as list of cards
@@ -73,13 +84,13 @@ class LabBuilder extends StatelessWidget {
       ),
     );
   }
+  //----------------------------------------------------------------------------------------------------------------
 
   /*takes a document each time it's called and returns a container with a card 
     depending on the document if it has the like of a photo or not
     if it has one it return  _myContainerWithNetworkImage 
     else that it returns _myContainerWithoutNetworkImage
   */
-
   Widget _myContainer(document) {
     String path = document['image'];
     String labName = document.documentID;
@@ -88,6 +99,7 @@ class LabBuilder extends StatelessWidget {
     }
     return _myContainerWithoutNetworkImage(labName, document);
   }
+  //----------------------------------------------------------------------------------------------------------------
 
   /*this method is just to spred data in a good way and collect the returns values in a container
     but it works if the document in the previous method has a photo like
@@ -106,6 +118,7 @@ class LabBuilder extends StatelessWidget {
     );
   }
 
+  //----------------------------------------------------------------------------------------------------------------
   /*this method is just to spred data in a good way and collect the returns values in a container
     but it works if the document in the previous method dont have a photo like
   */
@@ -122,6 +135,7 @@ class LabBuilder extends StatelessWidget {
     );
   }
 
+  //----------------------------------------------------------------------------------------------------------------
   /*this method is the one creating the card
     but it works if the document in the previous method dont have a photo like
   */
@@ -143,6 +157,7 @@ class LabBuilder extends StatelessWidget {
     );
   }
 
+  //----------------------------------------------------------------------------------------------------------------
   /*this method is the one creating the card
     but it works if the document in the previous method has a photo like
   */
@@ -159,6 +174,7 @@ class LabBuilder extends StatelessWidget {
     );
   }
 
+  //----------------------------------------------------------------------------------------------------------------
   //this method is just to creat a rounded photo
   Widget _myFadingImage(String path) {
     return ClipRRect(
@@ -172,6 +188,7 @@ class LabBuilder extends StatelessWidget {
     );
   }
 
+  //----------------------------------------------------------------------------------------------------------------
   //this method is just to add the lab name to the card
   Widget _labName(String name) {
     return Positioned(
@@ -181,12 +198,9 @@ class LabBuilder extends StatelessWidget {
       child: Container(
         color: Colors.black.withOpacity(.6),
         child: Center(
-          child: Hero(
-            tag: name,
-            child: Text(
-              name,
-              style: labNameStyle,
-            ),
+          child: Text(
+            name,
+            style: labNameStyle,
           ),
         ),
       ),
@@ -194,7 +208,7 @@ class LabBuilder extends StatelessWidget {
   }
 
   //--------------------------------------------------------------------------------------------------------------------------------------
-  //extract the data from it's own path
+  //extract the data from it's own path and calls the pathSetter to start navigating
   void _navigator(document) {
     Future<QuerySnapshot> d = Firestore.instance
         .collection(college)
