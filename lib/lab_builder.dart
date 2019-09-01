@@ -20,7 +20,6 @@ class LabBuilder extends StatelessWidget {
   var context;
   TextStyle labNameStyle = new TextStyle(
     fontSize: 18,
-    fontStyle: FontStyle.italic,
     color: Colors.white,
   );
   LabBuilder({this.college});
@@ -58,9 +57,7 @@ class LabBuilder extends StatelessWidget {
             child: Image.asset('lib/photos/cat_loading.gif'),
           );
         }
-        return Center(
-          child: _myWrap(snapShots),
-        );
+        return _myWrap(snapShots);
       },
     );
   }
@@ -77,9 +74,13 @@ class LabBuilder extends StatelessWidget {
         _myContainer(snapShots.data.documents[i]),
       );
     }
-    return Center(
-      child: SingleChildScrollView(
-        child: Wrap(children: wrapList),
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          Center(
+            child: Wrap(children: wrapList),
+          ),
+        ],
       ),
     );
   }
