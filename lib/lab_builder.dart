@@ -233,7 +233,7 @@ class LabBuilder extends StatelessWidget {
       for (int i = 0; i < documents.length; i++) {
         Vars.paths.add(
           new Paths(
-            exp_link: documents[i]['expLinke'],
+            exp_link: documents[i]['expLink'],
             expName: documents[i]['expName'],
             expNumber: documents[i]['expNumber'],
             fab_maker: true,
