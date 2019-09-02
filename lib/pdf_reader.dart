@@ -168,8 +168,8 @@ class PDF_File_Reader extends StatelessWidget {
   */
   Widget _myListTile(Paths object) {
     return ListTile(
-      title: Text('expiriment number (${object.expNumber})'),
-      subtitle: Text(object.expName),
+      title: Text(object.expName),
+      subtitle: Text('expiriment number (${object.expNumber})'),
       onTap: () {
         if (object.fab_maker != null &&
             object.fab_maker &&
