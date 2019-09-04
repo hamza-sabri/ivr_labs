@@ -46,9 +46,12 @@ class PDF_File_Reader extends StatelessWidget {
           );
         }
         if (snapShot.hasData) {
-          return SingleChildScrollView(
-            child: Column(
-              children: snapShot.data,
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+            child: SingleChildScrollView(
+              child: Column(
+                children: snapShot.data,
+              ),
             ),
           );
         }
@@ -169,7 +172,9 @@ class PDF_File_Reader extends StatelessWidget {
   Widget _myListTile(Paths object) {
     return ListTile(
       title: Text(object.expName),
-      subtitle: Text('expiriment number (${object.expNumber})'),
+      subtitle:(object.expNumber == null)?
+       Text(''):
+       Text('experiment number (${object.expNumber})'),
       onTap: () {
         if (object.fab_maker != null &&
             object.fab_maker &&
