@@ -6,7 +6,7 @@ import 'package:ivr_labs/var.dart';
 
 /* 
 this class is to get the data from the firebsae database and:
-1) crats the cards 
+1) crats the cards
 2) add the photos to the cards if exist
 3) add the label name of the lab on the cards
 4) make it clickable so if it's clicked it navigate to the 
@@ -216,10 +216,10 @@ class LabBuilder extends StatelessWidget {
         .collection('exp')
         .getDocuments();
     d.then((onValue) {
-      if (Vars.currentLabName == null ||
-          Vars.currentLabName != document.documentID) {
-        Vars.paths = [];
-        Vars.currentLabName = document.documentID;
+      if (StatticVars.currentLabName == null ||
+          StatticVars.currentLabName != document.documentID) {
+        StatticVars.paths = [];
+        StatticVars.currentLabName = document.documentID;
       }
       _pathSetter(onValue.documents);
     });
@@ -229,27 +229,26 @@ class LabBuilder extends StatelessWidget {
     then navigat it to the exp_viewer 
   */
   void _pathSetter(List<DocumentSnapshot> documents) {
-    if (Vars.paths.length == 0) {
+    if (StatticVars.paths.length == 0) {
       for (int i = 0; i < documents.length; i++) {
-        Vars.paths.add(
+        StatticVars.paths.add(
           new Paths(
             exp_link: documents[i]['expLink'],
             expName: documents[i]['expName'],
             expNumber: documents[i]['expNumber'],
-            fab_maker: true,
             report_link: documents[i]['report_link'],
             video_link: documents[i]['video_link'],
           ),
         );
       }
     }
-    if (Vars.paths.length > 0) {
+    if (StatticVars.paths.length > 0) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => Exp_viewer(
-            labName: Vars.currentLabName,
-            paths: Vars.paths,
+            labName: StatticVars.currentLabName,
+            paths: StatticVars.paths,
             documentsOfExperiments: documents,
           ),
         ),

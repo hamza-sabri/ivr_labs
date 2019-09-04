@@ -28,11 +28,11 @@ class PDF_File_Reader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     this.context = context;
-    return _myFutureCard();
+    return _myFutureCardsList();
   }
 
   //this method is to call the _columnBuilder method and handel the returned value from it
-  Widget _myFutureCard() {
+  Widget _myFutureCardsList() {
     return FutureBuilder(
       future: _columnBuilder(),
       builder: (context, snapShot) {
@@ -57,6 +57,21 @@ class PDF_File_Reader extends StatelessWidget {
         }
       },
     );
+  }
+
+  //this method is to loop throw the paths list and creat the cards from the data of the paths list
+  Future<List<Widget>> _columnBuilder() async {
+    List<Widget> cardsList = [];
+    for (int i = 0; i < paths.length; i++) {
+      if (paths[i].exp_path == null) await _expirementPathSetter(paths[i]);
+      if (paths[i].report_path == null) await _reportPathSetter(paths[i]);
+      cardsList.add(_creatCardFor(paths[i]));
+      if (paths[i].exp_path == null) {
+        //we return null so we know that error ocared while retreving data
+        return null;
+      }
+    }
+    return cardsList;
   }
 
   //as the name sugessts it returns a file with the expirement PDF file in it
@@ -100,21 +115,6 @@ class PDF_File_Reader extends StatelessWidget {
     if (f != null) {
       object.report_path = f.path;
     }
-  }
-
-  //this method is to loop throw the paths list and creat the cards from the data of the paths list
-  Future<List<Widget>> _columnBuilder() async {
-    List<Widget> cardsList = [];
-    for (int i = 0; i < paths.length; i++) {
-      if (paths[i].exp_path == null) await _expirementPathSetter(paths[i]);
-      if (paths[i].report_path == null) await _reportPathSetter(paths[i]);
-      cardsList.add(_creatCardFor(paths[i]));
-      if (paths[i].exp_path == null) {
-        //we return null so we know that error ocared while retreving data
-        return null;
-      }
-    }
-    return cardsList;
   }
 
   //switch to the pdf_viewer page with fab
@@ -172,14 +172,11 @@ class PDF_File_Reader extends StatelessWidget {
   Widget _myListTile(Paths object) {
     return ListTile(
       title: Text(object.expName),
-      subtitle:(object.expNumber == null)?
-       Text(''):
-       Text('experiment number (${object.expNumber})'),
+      subtitle: (object.expNumber == null)
+          ? Text('')
+          : Text('experiment number (${object.expNumber})'),
       onTap: () {
-        if (object.fab_maker != null &&
-            object.fab_maker &&
-            object.report_link != null &&
-            object.report_path != null) {
+        if (object.report_link != null && object.report_path != null) {
           _navigator1(object);
         } else {
           _navigator2(object);
