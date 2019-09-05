@@ -5,7 +5,7 @@ import 'package:ivr_labs/paths.dart';
 import 'package:ivr_labs/var.dart';
 
 /* 
-this class is to get the data from the firebsae database and:
+this class is to get the data from the firebase database and:
 1) crats the cards
 2) add the photos to the cards if exist
 3) add the label name of the lab on the cards
