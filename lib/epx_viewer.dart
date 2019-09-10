@@ -10,10 +10,11 @@ for each lab
 class Exp_viewer extends StatelessWidget {
   //some attributs ---------------------------------------------------------------------------------------------------
   List<DocumentSnapshot> documentsOfExperiments;
-  String labName;
+  String college, labName;
   List<Paths> paths;
   Exp_viewer({
     this.paths,
+    this.college,
     this.labName,
     this.documentsOfExperiments,
   });
@@ -28,6 +29,8 @@ class Exp_viewer extends StatelessWidget {
       ),
       body: PDF_File_Reader(
         paths: paths,
+        college: college,
+        labName: labName,
       ),
     );
   }

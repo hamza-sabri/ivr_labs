@@ -210,16 +210,23 @@ class LabBuilder extends StatelessWidget {
   //--------------------------------------------------------------------------------------------------------------------------------------
   //extract the data from it's own path and calls the pathSetter to start navigating
   void _navigator(document) {
+    String currentDocumentID = document.documentID;
     Future<QuerySnapshot> d = Firestore.instance
         .collection(college)
-        .document(document.documentID)
+        .document(currentDocumentID)
         .collection('exp')
         .getDocuments();
     d.then((onValue) {
       if (StatticVars.currentLabName == null ||
-          StatticVars.currentLabName != document.documentID) {
-        StatticVars.paths = [];
-        StatticVars.currentLabName = document.documentID;
+          StatticVars.currentLabName != currentDocumentID) {
+        StatticVars.add();
+        if (StatticVars.contains(currentDocumentID)) {
+          StatticVars.paths = StatticVars.myList(currentDocumentID);
+          StatticVars.currentLabName = document.documentID;
+        } else {
+          StatticVars.paths = [];
+          StatticVars.currentLabName = document.documentID;
+        }
       }
       _pathSetter(onValue.documents);
     });
@@ -247,6 +254,7 @@ class LabBuilder extends StatelessWidget {
         context,
         MaterialPageRoute(
           builder: (context) => Exp_viewer(
+            college: college,
             labName: StatticVars.currentLabName,
             paths: StatticVars.paths,
             documentsOfExperiments: documents,

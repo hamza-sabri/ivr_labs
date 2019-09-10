@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ivr_labs/paths.dart';
 import 'package:ivr_labs/pdf_viewer.dart';
@@ -17,11 +19,16 @@ class PDF_File_Reader extends StatelessWidget {
     color: Colors.white,
     fontSize: 18,
   );
-
+  TextStyle tipTextStyle = new TextStyle(
+    fontSize: 20.0,
+  );
+  String college, labName;
   List<Paths> paths;
   var context;
   PDF_File_Reader({
     this.paths,
+    this.college,
+    this.labName,
   });
 
   //---------------------------------------------------------------------------------------------------------------------------------
@@ -37,7 +44,7 @@ class PDF_File_Reader extends StatelessWidget {
       future: _columnBuilder(),
       builder: (context, snapShot) {
         if (snapShot.connectionState == ConnectionState.waiting) {
-          return _myStack();
+          return _myLoadingTips();
         }
         if (snapShot.hasError || snapShot.data == null) {
           return Image.asset(
@@ -80,7 +87,7 @@ class PDF_File_Reader extends StatelessWidget {
       var data = await http.get(url);
       var bytes = data.bodyBytes;
       var dir = await getApplicationDocumentsDirectory();
-      File file = File("${dir.path}/expirimen$expName.pdf");
+      File file = File("${dir.path}/expirimen$college$labName$expName.pdf");
       File urlPdf = await file.writeAsBytes(bytes);
       return urlPdf;
     } catch (e) {}
@@ -92,7 +99,7 @@ class PDF_File_Reader extends StatelessWidget {
       var data = await http.get(url);
       var bytes = data.bodyBytes;
       var dir = await getApplicationDocumentsDirectory();
-      File file = File("${dir.path}/report$expName.pdf");
+      File file = File("${dir.path}/report$college$labName$expName.pdf");
       File urlPdf = await file.writeAsBytes(bytes);
       return urlPdf;
     } catch (e) {}
@@ -186,15 +193,85 @@ class PDF_File_Reader extends StatelessWidget {
     );
   }
 
-  //this method is to set the loading gif and text on thier plases
-  Widget _myStack() {
+  Widget _myLoadingTips() {
+    return StreamBuilder(
+      stream:
+          Firestore.instance.collection(college).document(labName).snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _normalStack();
+        }
+        if (snapshot.hasError) {
+          return _normalStack();
+        }
+        return _myTips(snapshot.data['tips']);
+      },
+    );
+  }
+
+  //this method is to set the loading gif and the tip on thier plases
+  Widget _myTips(tips) {
+    if (tips == null || tips.length == 0) {
+      return _normalStack();
+    }
     return Stack(
       children: <Widget>[
-        Container(
-          width: double.infinity,
-          height: double.infinity,
-          color: Color(0xff191F26),
-        ),
+        _widthAndHeightSetUps(),
+        _myLoading_gif(),
+        _tipsBuilder(tips),
+      ],
+    );
+  }
+
+  Widget _tipsBuilder(tips) {
+    return Positioned(
+      left: 10,
+      right: 8,
+      bottom: -30,
+      child: _centeringTip(
+        tips,
+      ),
+    );
+  }
+
+  //pleas just get in the fucken center all the time
+  Widget _centeringTip(tips) {
+    return Container(
+      width: double.infinity,
+      child: Center(
+        child: _animatedTipBuilder(tips),
+      ),
+    );
+  }
+
+  Widget _animatedTipBuilder(tips) {
+    int length = tips.length;
+    return ColorizeAnimatedTextKit(
+        text: [
+          tips[_randomgenretor(length)],
+          tips[_randomgenretor(length)],
+        ],
+        textStyle: tipTextStyle,
+        colors: [Colors.purple, Colors.blue, Colors.yellow, Colors.red],
+        textAlign: TextAlign.center,
+        alignment: AlignmentDirectional.topStart // or Alignment.topLeft
+        );
+  }
+
+  //got no fucken Idea what it dose
+  Widget _widthAndHeightSetUps() {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: Color(0xff191F26),
+    );
+  }
+
+  //this method is to set the loading gif and text on thier plases
+  Widget _normalStack() {
+    return Stack(
+      children: <Widget>[
+        _widthAndHeightSetUps(),
         _myLoading_gif(),
         _myPositionedText(),
       ],
@@ -246,5 +323,15 @@ class PDF_File_Reader extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  //these two methos to creat a random index
+  int _randomgenretor(int length) {
+    return abs(Random().nextInt(length));
+  }
+
+  int abs(int random) {
+    if (random < 0) return random * -1;
+    return random;
   }
 }
