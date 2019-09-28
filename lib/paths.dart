@@ -16,4 +16,10 @@ class Paths {
     this.report_link,
     this.video_link,
   });
+
+  String toString() {
+    String result =
+        'expName : $expName\nexpNumber : $expNumber\nexpLink : $exp_link\nreport_link : $report_link\nvideo_link : $video_link\nexp_path : $exp_path\nreport_path : $report_path';
+    return result + '\n----------------------------------------------\n';
+  }
 }

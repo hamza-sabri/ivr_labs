@@ -217,15 +217,15 @@ class LabBuilder extends StatelessWidget {
         .collection('exp')
         .getDocuments();
     d.then((onValue) {
-      if (StatticVars.currentLabName == null ||
-          StatticVars.currentLabName != currentDocumentID) {
-        StatticVars.add();
-        if (StatticVars.contains(currentDocumentID)) {
-          StatticVars.paths = StatticVars.myList(currentDocumentID);
-          StatticVars.currentLabName = document.documentID;
+      if (StaticVars.currentLabName == null ||
+          StaticVars.currentLabName != currentDocumentID) {
+        StaticVars.add();
+        if (StaticVars.contains(currentDocumentID)) {
+          StaticVars.paths = StaticVars.myList(currentDocumentID);
+          StaticVars.currentLabName = document.documentID;
         } else {
-          StatticVars.paths = [];
-          StatticVars.currentLabName = document.documentID;
+          StaticVars.paths = [];
+          StaticVars.currentLabName = document.documentID;
         }
       }
       _pathSetter(onValue.documents);
@@ -236,9 +236,9 @@ class LabBuilder extends StatelessWidget {
     then navigat it to the exp_viewer 
   */
   void _pathSetter(List<DocumentSnapshot> documents) {
-    if (StatticVars.paths.length == 0) {
+    if (StaticVars.paths.length == 0) {
       for (int i = 0; i < documents.length; i++) {
-        StatticVars.paths.add(
+        StaticVars.paths.add(
           new Paths(
             exp_link: documents[i]['expLink'],
             expName: documents[i]['expName'],
@@ -249,14 +249,20 @@ class LabBuilder extends StatelessWidget {
         );
       }
     }
-    if (StatticVars.paths.length > 0) {
+
+    if (StaticVars.paths.length > 0) {
+      if (StaticVars.isClicked) {
+        return;
+      }
+      StaticVars.isClicked = true;
+
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Exp_viewer(
+          builder: (context) => new Exp_viewer(
             college: college,
-            labName: StatticVars.currentLabName,
-            paths: StatticVars.paths,
+            labName: StaticVars.currentLabName,
+            paths: StaticVars.paths,
             documentsOfExperiments: documents,
           ),
         ),
