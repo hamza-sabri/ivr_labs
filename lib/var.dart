@@ -12,6 +12,7 @@ class StaticVars {
   static HashMap<String, List<Paths>> labsMap;
   static bool isClicked = false;
   static List downloadedLabs;
+  static List<Paths> expListToPush;
   static void add() {
     if (labsMap == null) {
       labsMap = new HashMap();

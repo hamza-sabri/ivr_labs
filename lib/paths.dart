@@ -4,10 +4,24 @@ when extracted from the firebase it will be stored in
 a list of objects from this class 
 so the structure of the data is formed the same as this class sugestes 
 */
+import 'package:hive/hive.dart';
+part 'paths.g.dart';
+@HiveType()
 class Paths {
-  String expName, expNumber;
-  String exp_link, report_link, video_link;
-  String exp_path, report_path;
+  @HiveField(0)
+  String expName;
+  @HiveField(1)
+  String expNumber;
+  @HiveField(2)
+  String exp_link;
+  @HiveField(3)
+  String report_link;
+  @HiveField(4)
+  String video_link;
+  @HiveField(5)
+  String exp_path;
+  @HiveField(6)
+  String report_path;
 
   Paths({
     this.expName,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dialog.dart';
 import 'engineering_college.dart';
 import 'lab_builder.dart';
 
@@ -11,6 +12,7 @@ class AltatbeqeaCollege extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: myAdder(context),
       appBar: AppBar(
         title: Text('كلية التطبيقية'),
         actions: _myArow(context),
@@ -19,6 +21,15 @@ class AltatbeqeaCollege extends StatelessWidget {
       body: LabBuilder(
         college: 'التطبيقية',
       ),
+    );
+  }
+
+  Widget myAdder(context) {
+    return FloatingActionButton(
+      child: Icon(Icons.cloud_upload),
+      onPressed: () {
+        DialogCreator(resContext: context);
+      },
     );
   }
 

@@ -85,13 +85,17 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
   Future<void> _startDownloading() async {
     _toastMaker('downloading');
     for (int i = 0; i < paths.length; i++) {
-      if (widget.loop) {
-        await _downloadingFiles(paths[i].exp_link, 'exp', paths[i]);
-        await _downloadingFiles(paths[i].report_link, 'report', paths[i]);
-        if (widget.loop == false) {
-          _toastMaker('downloading had been cut');
-          break;
+      try {
+        if (widget.loop) {
+          await _downloadingFiles(paths[i].exp_link, 'exp', paths[i]);
+          await _downloadingFiles(paths[i].report_link, 'report', paths[i]);
+          if (widget.loop == false) {
+            _toastMaker('downloading had been cut');
+            break;
+          }
         }
+      } catch (e) {
+        print('my exiption is $e');
       }
       _toastMaker('exp $i has been  downladed');
     }
@@ -119,7 +123,7 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
 
 //this method is to download the pdf files and add them to the paths object
   Future<void> _downloadingFiles(String url, String type, Paths path) async {
-    if (url == null || path == null) {
+    if ((url == null || path == null) && url.length > 0) {
       return;
     }
     Dio dio = new Dio();
@@ -140,7 +144,7 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIos: 1,
-        backgroundColor: Colors.grey,
+        backgroundColor: Colors.black,
         textColor: Colors.white,
         fontSize: 16.0);
   }
