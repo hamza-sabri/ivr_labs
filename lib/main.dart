@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:ivr_labs/var.dart';
@@ -33,16 +34,26 @@ class MyApp extends StatelessWidget {
     Hive.init('${dir.path}/hive');
     Hive.registerAdapter(PathsAdapter(), 0);
     var box = await Hive.openBox('labs');
-    gettingData();
+
     List temp = box.get('d');
     if (temp == null) {
       temp = [];
     }
     StaticVars.downloadedLabs = temp;
+    gettingData();
   }
 
   Future<void> gettingData() async {
+    StaticVars.labsMap = new HashMap();
     var pathsLists = await Hive.openBox('pathsLists');
-    int length = pathsLists.values.length;
+    int length = StaticVars.downloadedLabs.length;
+    var temp;
+    for (int i = 0; i < length; i++) {
+      temp = pathsLists.get(StaticVars.downloadedLabs[i].hashCode);
+      if (temp != null) {
+        List<Paths> temp2 = temp.cast<Paths>();
+        StaticVars.labsMap[StaticVars.downloadedLabs[i]] = temp2;
+      }
+    }
   }
 }

@@ -9,6 +9,7 @@ accsesable  from any other class by making them static
 class StaticVars {
   static String currentLabName;
   static List<Paths> paths;
+  static List<Paths> labsList;
   static HashMap<String, List<Paths>> labsMap;
   static bool isClicked = false;
   static List downloadedLabs;

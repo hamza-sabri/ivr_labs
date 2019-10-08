@@ -3,13 +3,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:ivr_labs/paths.dart';
 import 'package:ivr_labs/var.dart';
-import 'package:ivr_labs/var.dart' as prefix0;
 import 'package:like_button/like_button.dart';
 import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+
+import 'epx_viewer.dart';
 
 // FaviarotCreator
 class FaviarotCreator extends StatefulWidget {
@@ -30,10 +30,12 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
   String labName;
   bool isDownloaded;
   List<Paths> paths;
-  var box;
+  var box, labsList;
+
   @override
   Widget build(BuildContext context) {
     box = Hive.box('labs');
+    labsList = Hive.box('pathsLists');
     _getSuper();
     return _downloadedLikeButton();
   }
@@ -55,7 +57,7 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
             return _downloadHandler();
           } else {
             widget.loop = false;
-            return _deletFilesFromDB();
+            return _deleteFilesFromDB();
           }
         },
         likeBuilder: (isLiked) {
@@ -68,13 +70,13 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
     );
   }
 
-  Future<bool> _deletFilesFromDB() async {
-    _toastMaker('deleating');
+  Future<bool> _deleteFilesFromDB() async {
+    _toastMaker('deleting');
     StaticVars.downloadedLabs.remove(labName);
     box.put('d', StaticVars.downloadedLabs);
-
     isDownloaded = !isDownloaded;
     widget.loop = false;
+    Exp_viewer.deletingFlag = true;
     return isDownloaded;
   }
 
@@ -101,15 +103,19 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
     }
     //-----------------------------------------------------------------
     if (widget.loop) {
-      _toastMaker('lab has been downloaded sucscfully');
-      StaticVars.downloadedLabs.add(labName);
-      StaticVars.currentLabName = labName;
-      box.put('d', StaticVars.downloadedLabs);
-      StaticVars.add();
-      //show a toast says that the download is done
+      _adder();
     } else {
       //show a toast says that the download stoped
     }
+  }
+
+  void _adder() {
+    _toastMaker('lab has been downloaded successfully');
+    StaticVars.downloadedLabs.add(labName);
+    StaticVars.currentLabName = labName;
+    box.put('d', StaticVars.downloadedLabs);
+    labsList.put(labName.hashCode, paths);
+    StaticVars.add();
   }
 
   Future<bool> _downloadHandler() async {
