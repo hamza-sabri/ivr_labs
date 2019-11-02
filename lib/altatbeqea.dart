@@ -9,6 +9,10 @@ display the cards of the labs
 *=> the cards in this class is for Altatbeqea collage
 */
 class AltatbeqeaCollege extends StatelessWidget {
+  Icon forwordIcon = Icon(
+    Icons.arrow_forward,
+    color: Colors.white,
+  );
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,6 +28,8 @@ class AltatbeqeaCollege extends StatelessWidget {
     );
   }
 
+  //this method is called just for the ivr team members
+  //it allows them to upload/update => the labs of any university
   Widget myAdder(context) {
     return FloatingActionButton(
       child: Icon(Icons.cloud_upload),
@@ -34,6 +40,7 @@ class AltatbeqeaCollege extends StatelessWidget {
   }
 
   //this method is just to creat the arrow navgating us to the engineering collage page
+  //you should add the controler when this button is clicked
   List<Widget> _myArow(BuildContext context) {
     List<Widget> myArrowList = [
       Padding(
@@ -43,10 +50,7 @@ class AltatbeqeaCollege extends StatelessWidget {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => EngeneeringCollege()));
           },
-          child: Icon(
-            Icons.arrow_forward,
-            color: Colors.white,
-          ),
+          child: forwordIcon,
         ),
       )
     ];

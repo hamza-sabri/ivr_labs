@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ivr_labs/paths.dart';
+import 'package:ivr_labs/validation.dart';
 import 'package:ivr_labs/var.dart';
 
 class UserPage extends StatefulWidget {
@@ -20,12 +20,14 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+  GeneralMethods _generalMethods;
   String expName, expNumber, expLink, reportLink, videoLink;
   List<TextEditingController> controllers = [];
   var context;
   @override
   Widget build(BuildContext context) {
     _addControlers();
+    _generalMethods = new GeneralMethods();
     this.context = context;
     return Scaffold(
       appBar: AppBar(
@@ -88,10 +90,11 @@ class _UserPageState extends State<UserPage> {
           ),
           color: Colors.blue,
           onPressed: () {
-            print('am in the saving');
-            if (_validation()) {
-              print('validated');
+            _generalMethods.toastMaker(_generalMethods.validation().toString());
+            if (_generalMethods.validation()) {
+              _generalMethods.toastMaker('validated');
               _pushToFirebase();
+              StaticVars.expListToPush = [];
             }
           },
         ),
@@ -106,14 +109,29 @@ class _UserPageState extends State<UserPage> {
         child: Text('previous', style: widget.style),
         color: Colors.blue,
         onPressed: () {
-          setState(
-            () {
-              if (widget.index == 0) return;
-              widget.index--;
-            },
-          );
+          widget.index--;
+          if (widget.index < 0) {
+            widget.index = 0;
+          }
+          showDataAt();
         },
       ),
+    );
+  }
+
+  void showDataAt() {
+    if (widget.index >= StaticVars.expListToPush.length) {
+      return;
+    }
+    setState(
+      () {
+        controllers[0].text = StaticVars.expListToPush[widget.index].expName;
+        controllers[1].text = StaticVars.expListToPush[widget.index].expNumber;
+        controllers[2].text = StaticVars.expListToPush[widget.index].exp_link;
+        controllers[3].text =
+            StaticVars.expListToPush[widget.index].report_link;
+        controllers[4].text = StaticVars.expListToPush[widget.index].video_link;
+      },
     );
   }
 
@@ -129,6 +147,7 @@ class _UserPageState extends State<UserPage> {
         onPressed: () {
           setState(() {
             widget.index++;
+            showDataAt();
             StaticVars.expListToPush.add(new Paths(
               expName: expName,
               exp_link: expLink,
@@ -200,21 +219,6 @@ class _UserPageState extends State<UserPage> {
     }
   }
 
-  bool _validation() {
-    Paths temp;
-    for (int i = 0; i < StaticVars.expListToPush.length; i++) {
-      temp = StaticVars.expListToPush[i];
-
-      if (temp.expName == null ||
-          temp.expName.length == 0 ||
-          temp.exp_link == null ||
-          temp.exp_link.length < 5) {
-        return false;
-      }
-    }
-    return true;
-  }
-
 //adding to the firebase starts from here ----------------------------------------------------------------------------------------
   void _pushToFirebase() {
     _addingImage();
@@ -226,7 +230,7 @@ class _UserPageState extends State<UserPage> {
       docID = _getId(temp.expNumber);
       docID == null ? _pushWithNull(temp) : _pushWithOutNull(temp, docID);
     }
-    _toastMaker('saving done');
+    // _toastMaker('saving done');
   }
 
   void _addingImage() async {
@@ -359,16 +363,5 @@ class _UserPageState extends State<UserPage> {
       default:
         return null;
     }
-  }
-
-  void _toastMaker(String msg) {
-    Fluttertoast.showToast(
-        msg: msg,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIos: 1,
-        backgroundColor: Colors.black,
-        textColor: Colors.white,
-        fontSize: 16.0);
   }
 }

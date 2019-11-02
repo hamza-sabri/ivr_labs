@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:ivr_labs/epx_viewer.dart';
-import 'package:ivr_labs/paths.dart';
-import 'package:ivr_labs/var.dart';
-
+import 'package:ivr_labs/card_builder.dart';
+import 'package:ivr_labs/lab_name_builder.dart';
 /* 
 this class is to get the data from the firebase database and:
 1) crats the cards
@@ -18,10 +16,7 @@ class LabBuilder extends StatelessWidget {
   double mySquare;
   String college;
   var context;
-  TextStyle labNameStyle = new TextStyle(
-    fontSize: 18,
-    color: Colors.white,
-  );
+
   LabBuilder({this.college});
   //------------------------------------------------------------------------------------------------------------------
 
@@ -94,10 +89,7 @@ class LabBuilder extends StatelessWidget {
   Widget _myContainer(document) {
     String path = document['image'];
     String labName = document.documentID;
-    if (path != null && path.length > 0) {
-      return _myContainerWithNetworkImage(path, labName, document);
-    }
-    return _myContainerWithoutNetworkImage(labName, document);
+    return _myContainerWithNetworkImage(path, labName, document);
   }
   //----------------------------------------------------------------------------------------------------------------
 
@@ -106,167 +98,20 @@ class LabBuilder extends StatelessWidget {
   */
   Widget _myContainerWithNetworkImage(String path, String name, document) {
     return Container(
-      color: Colors.black.withOpacity(0),
       width: mySquare,
       height: mySquare,
       child: Stack(
         children: <Widget>[
-          _myLabCard(document, path),
-          _labName(name),
+          CardBuilder(
+            college: college,
+            mySquare: mySquare,
+            path: path,
+            document: document,
+          ),
+          // _labCard(document, path),
+          LabName(name: name),
         ],
       ),
     );
-  }
-
-  //----------------------------------------------------------------------------------------------------------------
-  /*this method is just to spred data in a good way and collect the returns values in a container
-    but it works if the document in the previous method dont have a photo like
-  */
-  Widget _myContainerWithoutNetworkImage(String name, document) {
-    return Stack(
-      children: <Widget>[
-        Container(
-          width: mySquare,
-          height: mySquare,
-          child: _myLabCardWithNoPhoto(document),
-        ),
-        _labName(name),
-      ],
-    );
-  }
-
-  //----------------------------------------------------------------------------------------------------------------
-  /*this method is the one creating the card
-    but it works if the document in the previous method dont have a photo like
-  */
-  Widget _myLabCardWithNoPhoto(document) {
-    return Card(
-      elevation: 4,
-      child: InkWell(
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(15),
-          child: Image.asset(
-            'lib/photos/lab_image.jpg',
-            fit: BoxFit.fill,
-          ),
-        ),
-        onTap: () {
-          _navigator(document);
-        },
-      ),
-    );
-  }
-
-  //----------------------------------------------------------------------------------------------------------------
-  /*this method is the one creating the card
-    but it works if the document in the previous method has a photo like
-  */
-  Widget _myLabCard(document, String path) {
-    return Card(
-      color: Colors.white.withOpacity(0),
-      elevation: 0,
-      child: InkWell(
-        onTap: () {
-          _navigator(document);
-        },
-        child: _myFadingImage(path),
-      ),
-    );
-  }
-
-  //----------------------------------------------------------------------------------------------------------------
-  //this method is just to creat a rounded photo
-  Widget _myFadingImage(String path) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(15),
-      child: FadeInImage.assetNetwork(
-          fit: BoxFit.fill,
-          width: mySquare,
-          height: mySquare,
-          placeholder: 'lib/photos/lamb_loading.gif',
-          image: path),
-    );
-  }
-
-  //----------------------------------------------------------------------------------------------------------------
-  //this method is just to add the lab name to the card
-  Widget _labName(String name) {
-    return Positioned(
-      bottom: 20,
-      right: 10,
-      left: 10,
-      child: Container(
-        color: Colors.black.withOpacity(.6),
-        child: Center(
-          child: Text(
-            name,
-            style: labNameStyle,
-          ),
-        ),
-      ),
-    );
-  }
-
-  //--------------------------------------------------------------------------------------------------------------------------------------
-  //extract the data from it's own path and calls the pathSetter to start navigating
-  void _navigator(document) {
-    String currentDocumentID = document.documentID;
-    Future<QuerySnapshot> d = Firestore.instance
-        .collection(college)
-        .document(currentDocumentID)
-        .collection('exp')
-        .getDocuments();
-    d.then((onValue) {
-      if (StaticVars.currentLabName == null ||
-          StaticVars.currentLabName != currentDocumentID) {
-        StaticVars.add();
-        if (StaticVars.contains(currentDocumentID)) {
-          StaticVars.paths = StaticVars.myList(currentDocumentID);
-          StaticVars.currentLabName = document.documentID;
-        } else {
-          StaticVars.paths = [];
-          StaticVars.currentLabName = document.documentID;
-        }
-      }
-      _pathSetter(onValue.documents);
-    });
-  }
-
-  /*add the pathes to the list if it's ready to be navigated
-    then navigat it to the exp_viewer 
-  */
-  void _pathSetter(List<DocumentSnapshot> documents) {
-    if (StaticVars.paths.length == 0) {
-      for (int i = 0; i < documents.length; i++) {
-        StaticVars.paths.add(
-          new Paths(
-            exp_link: documents[i]['expLink'],
-            expName: documents[i]['expName'],
-            expNumber: documents[i]['expNumber'],
-            report_link: documents[i]['report_link'],
-            video_link: documents[i]['video_link'],
-          ),
-        );
-      }
-    }
-
-    if (StaticVars.paths.length > 0) {
-      if (StaticVars.isClicked) {
-        return;
-      }
-      StaticVars.isClicked = true;
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => new Exp_viewer(
-            college: college,
-            labName: StaticVars.currentLabName,
-            paths: StaticVars.paths,
-            documentsOfExperiments: documents,
-          ),
-        ),
-      );
-    }
   }
 }

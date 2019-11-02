@@ -6,8 +6,6 @@ import 'package:ivr_labs/var.dart';
 import 'package:like_button/like_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'epx_viewer.dart';
 
@@ -86,6 +84,7 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
 
   Future<void> _startDownloading() async {
     _toastMaker('downloading');
+    Exp_viewer.deletingFlag = false;
     for (int i = 0; i < paths.length; i++) {
       try {
         if (widget.loop) {

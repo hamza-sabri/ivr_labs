@@ -95,6 +95,7 @@ class DialogCreator {
 
   bool validation() {
     if (college != null && labName != null) {
+      college = college.trim();
       if (college == 'التطبيقية' || college == 'الهندسة') {
         if (!labName.contains('مختبر')) {
           String temp = ' مختبر ' + labName;
@@ -103,9 +104,9 @@ class DialogCreator {
         _toastMaker('start adding ...');
         return true;
       }
-      _toastMaker('the college name has to be valide \nالهندسة أو التطبيقية');
+      _toastMaker('الكليات المسموحة تطبيقية او هندسة');
     }
-    _toastMaker('enter the college name \nand the lab name first');
+    _toastMaker('قم بإدخال اسم الكلية و المختبر اوﻻ');
 
     return false;
   }
