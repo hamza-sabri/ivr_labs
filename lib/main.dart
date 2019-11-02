@@ -11,13 +11,15 @@ void main() => runApp(MyApp());
 
 /*
 this class is just to navigate between the pages  
+and set the needed initalisations for the Hive data base
+
 */
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _openLabBox();
 
-    //you can change it
+    //add a controler somehow
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: PageView(
@@ -43,6 +45,7 @@ class MyApp extends StatelessWidget {
     gettingData();
   }
 
+  //geting all the paths needed to lunch any lab
   Future<void> gettingData() async {
     StaticVars.labsMap = new HashMap();
     var pathsLists = await Hive.openBox('pathsLists');
