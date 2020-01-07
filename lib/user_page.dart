@@ -298,6 +298,7 @@ class _UserPageState extends State<UserPage> {
     }
   }
 
+  //this method sucks pleas change it pleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeas
   String _getId(number) {
     switch (number) {
       case '1':

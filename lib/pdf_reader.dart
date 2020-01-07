@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:ivr_labs/paths.dart';
 import 'package:ivr_labs/pdf_viewer.dart';
 import 'package:ivr_labs/pdf_viewer_with_fab.dart';
+import 'package:ivr_labs/var.dart';
 import 'package:ivr_labs/youtube_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
@@ -23,19 +24,27 @@ class PDF_File_Reader extends StatelessWidget {
     fontSize: 20.0,
   );
   String college, labName;
+  String university;
   List<Paths> paths;
   var context;
   PDF_File_Reader({
-    this.paths,
+    this.university,
     this.college,
     this.labName,
+    this.paths,
   });
 
   //---------------------------------------------------------------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     this.context = context;
-    return _myFutureCardsList();
+    return WillPopScope(
+      child: _myFutureCardsList(),
+      onWillPop: () async {
+        StaticVars.isClicked = false;
+        return true;
+      },
+    );
   }
 
   //this method is to call the _columnBuilder method and handel the returned value from it
@@ -195,8 +204,14 @@ class PDF_File_Reader extends StatelessWidget {
 
   Widget _myLoadingTips() {
     return StreamBuilder(
-      stream:
-          Firestore.instance.collection(college).document(labName).snapshots(),
+      stream: Firestore.instance
+          .collection('univ')
+          .document(university)
+          .collection('colleges')
+          .document(college)
+          .collection('labs')
+          .document(labName)
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _normalStack();

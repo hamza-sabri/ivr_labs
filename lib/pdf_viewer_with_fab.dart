@@ -24,13 +24,19 @@ class _PDF_ViewerState extends State<PDF_Viewer_FAB> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-      centerTitle: true,
-      title: Text(widget.appBarTitle),
+    return WillPopScope(
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(widget.appBarTitle),
+        ),
+        body: _myBody(),
+        floatingActionButton: _myFAB(),
       ),
-      body: _myBody(),
-      floatingActionButton: _myFAB(),
+      onWillPop: () async {
+        //do your thing here to make the love botton statfull
+        return true;
+      },
     );
   }
 
@@ -47,6 +53,7 @@ class _PDF_ViewerState extends State<PDF_Viewer_FAB> {
       },
     );
   }
+
   //put the pdf reader on it's position
   Widget _myBody() {
     return Stack(
@@ -60,7 +67,7 @@ class _PDF_ViewerState extends State<PDF_Viewer_FAB> {
       ],
     );
   }
-  
+
   //opens the PDFView for urlPath in the super class
   Widget _myPDFView() {
     return PDFView(
@@ -76,7 +83,7 @@ class _PDF_ViewerState extends State<PDF_Viewer_FAB> {
       },
     );
   }
-  
+
   //this method navigates PDF_Viewer class
   void _navigator() {
     if (widget.reportFilePath == null) {

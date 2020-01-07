@@ -1,38 +1,31 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ivr_labs/faviarot.dart';
 import 'package:ivr_labs/paths.dart';
 import 'package:ivr_labs/pdf_reader.dart';
+import 'package:ivr_labs/validation.dart';
 import 'package:ivr_labs/var.dart';
 
-/*
-this class is to show the list of cards with the expirements names and numbers 
-for each lab  
-*/
 class Exp_viewer extends StatelessWidget {
-  //some attributs ---------------------------------------------------------------------------------------------------
   List<DocumentSnapshot> documentsOfExperiments;
-  String college, labName;
+  String college, labName, university;
   List<Paths> paths;
+  GeneralMethods _generalMethods = new GeneralMethods();
   static bool deletingFlag = false;
-  //------------------------------------------
+
   Exp_viewer({
     this.paths,
     this.college,
     this.labName,
     this.documentsOfExperiments,
+    this.university,
   });
-  //-------------------------------------------------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        if (deletingFlag) {
-          _deletePaths();
-        }
+      onWillPop: () {
         return _back();
       },
       child: Scaffold(
@@ -42,14 +35,7 @@ class Exp_viewer extends StatelessWidget {
     );
   }
 
-  Widget _myBody() {
-    return PDF_File_Reader(
-      paths: paths,
-      college: college,
-      labName: labName,
-    );
-  }
-
+  //building a custom appBar woth favarot botton
   AppBar _myAppBar() {
     return AppBar(
       title: Text(labName),
@@ -60,6 +46,7 @@ class Exp_viewer extends StatelessWidget {
     );
   }
 
+  //returns what FaviarotCreator is returning
   Widget _myFav() {
     bool isDownloaded = StaticVars.downloadedLabs.contains(labName);
     return FaviarotCreator(
@@ -68,22 +55,23 @@ class Exp_viewer extends StatelessWidget {
     );
   }
 
-//this method is called when this activity is done "killed"
-  Future<bool> _back() async {
-    StaticVars.isClicked = false;
-    return true;
+  Widget _myBody() {
+    return PDF_File_Reader(
+      university: university,
+      paths: paths,
+      college: college,
+      labName: labName,
+    );
   }
 
+  //check the non since thing that goes her
+  //this method should belong to the static methods not her !!!
   Future<void> _deletePaths() async {
-    //some vars
     var expDir, reportDir;
-    int length = paths.length;
     String expTemp, reportTemp;
-    //----------------------------------------------------------------------
-    //looping throug out the paths list
-    for (int i = 0; i < length; i++) {
-      expTemp = paths[i].exp_path;
-      reportTemp = paths[i].report_path;
+    for (var path in paths) {
+      expTemp = path.exp_path;
+      reportTemp = path.report_path;
       expDir = Directory(expTemp);
       await expDir.deleteSync(recursive: true);
       if (reportTemp != null && reportTemp.length > 10) {
@@ -91,22 +79,19 @@ class Exp_viewer extends StatelessWidget {
         await reportDir.deleteSync(recursive: true);
       }
     }
-    //----------------------------------------------------------------------
-    _toastMaker('lab has been deleted successfully');
+    _generalMethods.toastMaker('lab has been deleted successfully');
     StaticVars.labsMap.remove(labName);
     StaticVars.currentLabName = null;
     StaticVars.downloadedLabs.remove(labName);
     deletingFlag = false;
   }
 
-  void _toastMaker(String msg) {
-    Fluttertoast.showToast(
-        msg: msg,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIos: 1,
-        backgroundColor: Colors.black,
-        textColor: Colors.white,
-        fontSize: 16.0);
+  //deleting the exp if the flag is true
+  Future<bool> _back() async {
+    StaticVars.isClicked = false;
+    if (deletingFlag) {
+      _deletePaths();
+    }
+    return true;
   }
 }

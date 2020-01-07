@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 
-
 /*
 this class is to open the PDF files to read and interact 
 */
 
-
 class PDF_Viewer extends StatefulWidget {
   String urlpath, appBarTitle;
   PDF_Viewer({
-    Key key,
     this.urlpath,
     this.appBarTitle,
-  }) : super(key: key);
+  });
   @override
   _PDF_ViewerState createState() => _PDF_ViewerState();
 }

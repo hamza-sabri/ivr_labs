@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LabName extends StatelessWidget {
-  String name;
+  final String name;
   TextStyle labNameStyle;
   LabName({this.name});
   @override
@@ -9,11 +9,11 @@ class LabName extends StatelessWidget {
     _dynamicText(context);
     return _labName(name);
   }
-  
+
   //making the text dynamic based on the width of the screen
   void _dynamicText(context) {
     double totalWidth = MediaQuery.of(context).size.width;
-    double size = (totalWidth / 100) + 13;
+    double size = (totalWidth / 110) + 13;
     labNameStyle = new TextStyle(
       fontSize: size,
       color: Colors.white,
