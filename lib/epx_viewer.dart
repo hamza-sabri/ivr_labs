@@ -13,7 +13,7 @@ class Exp_viewer extends StatelessWidget {
   List<Paths> paths;
   GeneralMethods _generalMethods = new GeneralMethods();
   static bool deletingFlag = false;
-
+ 
   Exp_viewer({
     this.paths,
     this.college,
