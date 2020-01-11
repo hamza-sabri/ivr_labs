@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ivr_labs/paths.dart';
 
 /**
@@ -23,11 +24,25 @@ class StaticVars {
   static bool isClicked = false;
   static List downloadedLabs;
   static List<Paths> expListToPush;
+  static List<String> documentsIDs;
+  static List<DocumentSnapshot> searchingList;
+  static List<DocumentSnapshot> streemList;
   static void add() {
     if (labsMap == null) {
       labsMap = new HashMap();
     }
     labsMap[currentLabName] = paths;
+  }
+
+  static void addToStreemList(DocumentSnapshot document) {
+    if (streemList == null) {
+      streemList = [];
+      documentsIDs = [];
+    }
+    if (!documentsIDs.contains(document.documentID)) {
+      streemList.add(document);
+      documentsIDs.add(document.documentID);
+    }
   }
 
   static bool contains(String lab) {

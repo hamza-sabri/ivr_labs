@@ -2,16 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ivr_labs/card_builder.dart';
 import 'package:ivr_labs/lab_name_builder.dart';
+import 'package:ivr_labs/var.dart';
 
 class BodyBuilder extends StatelessWidget {
   double mySquare;
   String college, university, from;
   var context, firebasePath;
-
+//--------------------------------------------------------------------------------------
+  List<DocumentSnapshot> streemList;
   BodyBuilder({
     this.college,
     this.from,
     this.university,
+    this.streemList,
   });
 
   @override
@@ -19,6 +22,10 @@ class BodyBuilder extends StatelessWidget {
     this.context = context;
     _setWidthAndHeight();
     _pathSetter();
+    return (streemList != null) ? _myWrap(streemList) : _myStreem();
+  }
+
+  Widget _myStreem() {
     return StreamBuilder(
       stream: firebasePath,
       builder: (context, snapShots) {
@@ -71,13 +78,16 @@ class BodyBuilder extends StatelessWidget {
         child: Image.asset('lib/photos/cat_loading.gif'),
       );
     }
-    return _myWrap(snapShots);
+    if (streemList == null && university != 'univ' && from != 'univ') {
+      StaticVars.streemList = snapShots.data.documents;
+    }
+    return _myWrap(snapShots.data.documents);
   }
 
   //loops throw the documents in the snapShots and send them to _customContainer
-  Widget _myWrap(AsyncSnapshot snapShots) {
+  Widget _myWrap(documents) {
     List<Widget> wrapList = [];
-    for (var temp in snapShots.data.documents) {
+    for (var temp in documents) {
       wrapList.add(_customContainer(temp));
     }
     return SingleChildScrollView(
@@ -91,6 +101,7 @@ class BodyBuilder extends StatelessWidget {
   Widget _customContainer(document) {
     String path = document['image'];
     String labName = document.documentID;
+
     return Container(
       width: mySquare,
       height: _dynamicHeight(),

@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
       university: snapShots.data,
       from: 'univ',
       title: snapShots.data == 'univ' ? 'universities' : snapShots.data,
+      replacment: (snapShots.data != 'univ'),
     );
   }
 }

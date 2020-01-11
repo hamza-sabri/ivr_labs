@@ -132,17 +132,20 @@ class CardBuilder extends StatelessWidget {
       Box universityBox = Hive.box('universityName');
       universityBox.put('university_name', currentDocumentID);
       //up to this line it's good
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => new MyBuilder(
             from: university,
             university: currentDocumentID,
             title: currentDocumentID,
+            replacment: true,
           ),
         ),
       );
     } else if (from == 'univ') {
+      //to refell the list again
+      StaticVars.streemList = null;
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -151,6 +154,7 @@ class CardBuilder extends StatelessWidget {
             university: university,
             title: currentDocumentID,
             from: '',
+            isLab: true,
           ),
         ),
       );
