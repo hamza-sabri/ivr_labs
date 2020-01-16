@@ -4,12 +4,9 @@ import 'package:ivr_labs/card_builder.dart';
 import 'package:ivr_labs/lab_name_builder.dart';
 import 'package:ivr_labs/var.dart';
 
-class BodyBuilder extends StatelessWidget {
-  double mySquare;
-  String college, university, from;
-  var context, firebasePath;
-//--------------------------------------------------------------------------------------
-  List<DocumentSnapshot> streemList;
+class BodyBuilder extends StatefulWidget {
+  final String college, university, from;
+  final List<DocumentSnapshot> streemList;
   BodyBuilder({
     this.college,
     this.from,
@@ -18,11 +15,18 @@ class BodyBuilder extends StatelessWidget {
   });
 
   @override
+  _BodyBuilderState createState() => _BodyBuilderState();
+}
+
+class _BodyBuilderState extends State<BodyBuilder> {
+  var context, firebasePath;
+  double mySquare;
+  @override
   Widget build(BuildContext context) {
     this.context = context;
     _setWidthAndHeight();
     _pathSetter();
-    return (streemList != null) ? _myWrap(streemList) : _myStreem();
+    return (widget.streemList != null) ? _myWrap(widget.streemList) : _myStreem();
   }
 
   Widget _myStreem() {
@@ -34,9 +38,8 @@ class BodyBuilder extends StatelessWidget {
     );
   }
 
-  //set the dimentions for width and hight of the card
   void _setWidthAndHeight() {
-    int div = (university == 'univ' || from == 'univ') ? 0 : 1;
+    int div = (widget.university == 'univ' || widget.from == 'univ') ? 0 : 1;
     if (MediaQuery.of(context).orientation == Orientation.landscape) {
       mySquare = MediaQuery.of(context).size.width / (div + 2) - 10;
     } else {
@@ -44,31 +47,29 @@ class BodyBuilder extends StatelessWidget {
     }
   }
 
-  //choosing the path on the firebase to read from
   void _pathSetter() {
-    if (university == 'univ') {
+    if (widget.university == 'univ') {
       //this line will bring all the universities in the database
-      firebasePath = Firestore.instance.collection(university).snapshots();
-    } else if (from == 'univ') {
+      firebasePath = Firestore.instance.collection(widget.university).snapshots();
+    } else if (widget.from == 'univ') {
       //this path will bring all the colleges in the university
       firebasePath = Firestore.instance
-          .collection(from)
-          .document(university)
+          .collection(widget.from)
+          .document(widget.university)
           .collection('colleges')
           .snapshots();
     } else {
       //this path will bring all the labs  in this college from this university
       firebasePath = Firestore.instance
           .collection('univ')
-          .document(university)
+          .document(widget.university)
           .collection('colleges')
-          .document(college)
+          .document(widget.college)
           .collection('labs')
           .snapshots();
     }
   }
 
-  //handels the snapShots of the streemBuilder
   Widget _streemHandler(snapShots) {
     if (snapShots.connectionState == ConnectionState.waiting) {
       return LinearProgressIndicator();
@@ -78,13 +79,12 @@ class BodyBuilder extends StatelessWidget {
         child: Image.asset('lib/photos/cat_loading.gif'),
       );
     }
-    if (streemList == null && university != 'univ' && from != 'univ') {
+    if (widget.streemList == null && widget.university != 'univ' && widget.from != 'univ') {
       StaticVars.streemList = snapShots.data.documents;
     }
     return _myWrap(snapShots.data.documents);
   }
 
-  //loops throw the documents in the snapShots and send them to _customContainer
   Widget _myWrap(documents) {
     List<Widget> wrapList = [];
     for (var temp in documents) {
@@ -97,7 +97,6 @@ class BodyBuilder extends StatelessWidget {
     );
   }
 
-  //returns a container with a CardBuilder and a LabName on top of it
   Widget _customContainer(document) {
     String path = document['image'];
     String labName = document.documentID;
@@ -108,20 +107,19 @@ class BodyBuilder extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           CardBuilder(
-              college: college,
+              college: widget.college,
               mySquare: mySquare,
               path: path,
               document: document,
-              university: university,
-              from: from),
+              university: widget.university,
+              from: widget.from),
           LabName(name: labName),
         ],
       ),
     );
   }
 
-  //returns a custom height depending on rhe receved attripute
   double _dynamicHeight() {
-    return (university == 'univ' || from == 'univ') ? mySquare - 100 : mySquare;
+    return (widget.university == 'univ' || widget.from == 'univ') ? mySquare - 100 : mySquare;
   }
 }

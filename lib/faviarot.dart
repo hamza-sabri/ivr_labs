@@ -9,11 +9,8 @@ import 'package:dio/dio.dart';
 import 'epx_viewer.dart';
 
 class FaviarotCreator extends StatefulWidget {
-  String labName;
-  bool isDownloaded;
-  bool loop = true;
-  List<Paths> paths;
-  //--------------------------------------------------------------
+ final  String labName;
+ final bool isDownloaded;
   FaviarotCreator({
     this.labName,
     this.isDownloaded,
@@ -22,7 +19,7 @@ class FaviarotCreator extends StatefulWidget {
   _FaviarotCreatorState createState() => _FaviarotCreatorState();
 }
 
-/**
+/*
  * this class needs no documintation
  * every method is simple and explains it selfe from the name
  */
@@ -30,6 +27,7 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
   String labName;
   bool isDownloaded;
   List<Paths> paths;
+  bool loop = true;
   var box, labsList;
   GeneralMethods _generalMethods = new GeneralMethods();
 
@@ -45,7 +43,7 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
     labsList = Hive.box('pathsLists');
     labName = widget.labName;
     isDownloaded = widget.isDownloaded;
-    paths = widget.paths;
+    paths = paths;
   }
 
   Widget _downloadedLikeButton() {
@@ -55,10 +53,10 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
         isLiked: isDownloaded,
         onTap: (isDownloaded) {
           if (!isDownloaded) {
-            widget.loop = true;
+            loop = true;
             return _downloadHandler();
           } else {
-            widget.loop = false;
+            loop = false;
             return _deleteFilesFromDB();
           }
         },
@@ -77,20 +75,20 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
     StaticVars.downloadedLabs.remove(labName);
     box.put('d', StaticVars.downloadedLabs);
     isDownloaded = !isDownloaded;
-    widget.loop = false;
-    Exp_viewer.deletingFlag = true;
+    loop = false;
+    Expviewer.deletingFlag = true;
     return isDownloaded;
   }
 
   Future<void> _startDownloading() async {
     _generalMethods.toastMaker('downloading');
-    Exp_viewer.deletingFlag = false;
+    Expviewer.deletingFlag = false;
     for (int i = 0; i < paths.length; i++) {
       try {
-        if (widget.loop) {
-          await _downloadingFiles(paths[i].exp_link, 'exp', paths[i]);
-          await _downloadingFiles(paths[i].report_link, 'report', paths[i]);
-          if (widget.loop == false) {
+        if (loop) {
+          await _downloadingFiles(paths[i].expLink, 'exp', paths[i]);
+          await _downloadingFiles(paths[i].reportLink, 'report', paths[i]);
+          if (loop == false) {
             _generalMethods.toastMaker('downloading had been cut');
             break;
           }
@@ -98,7 +96,7 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
       } catch (e) {}
       _generalMethods.toastMaker('exp $i has been  downladed');
     }
-    if (widget.loop) {
+    if (loop) {
       _adder();
     }
   }
@@ -131,7 +129,7 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
       var dir = await getApplicationDocumentsDirectory();
       savedPath = '${dir.path}/$labName${path.expName}$type.pdf';
       await dio.download(url, savedPath, onReceiveProgress: (rec, total) {});
-      type == 'exp' ? path.exp_path = savedPath : path.report_path = savedPath;
+      type == 'exp' ? path.expPath = savedPath : path.reportPath = savedPath;
     } catch (e) {}
   }
 }

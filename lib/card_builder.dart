@@ -6,10 +6,10 @@ import 'package:ivr_labs/paths.dart';
 import 'package:ivr_labs/var.dart';
 import 'epx_viewer.dart';
 
-class CardBuilder extends StatelessWidget {
+class CardBuilder extends StatefulWidget {
   final String path, college, university, from;
-  var document, context;
-  double mySquare;
+  final  document;
+  final double mySquare;
   CardBuilder({
     this.path,
     this.document,
@@ -20,12 +20,17 @@ class CardBuilder extends StatelessWidget {
   });
 
   @override
+  _CardBuilderState createState() => _CardBuilderState();
+}
+
+class _CardBuilderState extends State<CardBuilder> {
+  var context;
+  @override
   Widget build(BuildContext context) {
     this.context = context;
     return _customLabCard();
   }
 
-  //returns a clickable card
   Widget _customLabCard() {
     return Card(
       color: Colors.white.withOpacity(0),
@@ -33,17 +38,16 @@ class CardBuilder extends StatelessWidget {
       child: InkWell(
         onTap: () {
           if (!StaticVars.isClicked) {
-            _pathSetter(document);
+            _pathSetter(widget.document);
           }
         },
-        child: path != null
-            ? _myFadingImage(path)
+        child: widget.path != null
+            ? _myFadingImage(widget.path)
             : Image.asset('lib/photos/lab_image.jpg'),
       ),
     );
   }
 
-  //OMG
   void _pathSetter(document) {
     String currentDocumentID = document.documentID;
     StaticVars.isClicked = true;
@@ -51,13 +55,8 @@ class CardBuilder extends StatelessWidget {
     _gettingDataFromFireBase(document, currentDocumentID);
   }
 
-  //shit alot of fucken statics is going her and thats fucken bad
-  /**
-   * this method is to check if the lab is opened pefore then
-   *  get it from the list else download it and save it in the list
-   */
   void _gettingDataFromFireBase(document, String currentDocumentID) {
-    if (university == 'univ' || from == 'univ') return;
+    if (widget.university == 'univ' || widget.from == 'univ') return;
     Future<QuerySnapshot> d = _getPath(currentDocumentID);
     d.then((onValue) {
       if (StaticVars.currentLabName == null ||
@@ -75,20 +74,18 @@ class CardBuilder extends StatelessWidget {
     });
   }
 
-  //returns a fadingImage from the given path
   Widget _myFadingImage(String path) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),
       child: FadeInImage.assetNetwork(
           fit: BoxFit.fill,
-          width: mySquare,
-          height: mySquare,
+          width: widget.mySquare,
+          height: widget.mySquare,
           placeholder: 'lib/photos/lamb_loading.gif',
           image: path),
     );
   }
 
-  //handels the click event on the card
   void _navigator(List<DocumentSnapshot> documents) {
     if (StaticVars.paths.length == 0) {
       _addToListOfPaths(documents);
@@ -98,9 +95,9 @@ class CardBuilder extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => new Exp_viewer(
-              university: university,
-              college: college,
+          builder: (context) => new Expviewer(
+              university: widget.university,
+              college: widget.college,
               labName: StaticVars.currentLabName,
               paths: StaticVars.paths,
               documentsOfExperiments: documents),
@@ -109,26 +106,23 @@ class CardBuilder extends StatelessWidget {
     }
   }
 
-  //this method recives a list of documents and loop throw them extracting the data to the static list
   void _addToListOfPaths(documents) {
     for (var doc in documents) {
       StaticVars.paths.add(
         new Paths(
-          exp_link: doc['expLink'],
+          expLink: doc['expLink'],
           expName: doc['expName'],
           expNumber: doc['expNumber'],
-          report_link: doc['report_link'],
-          video_link: doc['video_link'],
+          reportLink: doc['report_link'],
+          videoLink: doc['video_link'],
         ),
       );
     }
   }
 
-  //try to fix this method with ? thing cuz it sucks like this
-  //infact you should fix it with a statfull widget insted of all this noun sence thats going on
   void _dynamicIVR(String currentDocumentID) {
+    if (widget.university == 'univ') {
     StaticVars.isClicked = false;
-    if (university == 'univ') {
       Box universityBox = Hive.box('universityName');
       universityBox.put('university_name', currentDocumentID);
       //up to this line it's good
@@ -136,14 +130,15 @@ class CardBuilder extends StatelessWidget {
         context,
         MaterialPageRoute(
           builder: (context) => new MyBuilder(
-            from: university,
+            from: widget.university,
             university: currentDocumentID,
             title: currentDocumentID,
             replacment: true,
           ),
         ),
       );
-    } else if (from == 'univ') {
+    } else if (widget.from == 'univ') {
+    StaticVars.isClicked = false;
       //to refell the list again
       StaticVars.streemList = null;
       Navigator.push(
@@ -151,7 +146,7 @@ class CardBuilder extends StatelessWidget {
         MaterialPageRoute(
           builder: (context) => new MyBuilder(
             college: currentDocumentID,
-            university: university,
+            university: widget.university,
             title: currentDocumentID,
             from: '',
             isLab: true,
@@ -161,13 +156,12 @@ class CardBuilder extends StatelessWidget {
     }
   }
 
-  //returns the path to reed the exp from the firebase
   Future<QuerySnapshot> _getPath(String currentDocumentID) {
     return Firestore.instance
         .collection('univ')
-        .document(university)
+        .document(widget.university)
         .collection('colleges')
-        .document(college)
+        .document(widget.college)
         .collection('labs')
         .document(currentDocumentID)
         .collection('exp')

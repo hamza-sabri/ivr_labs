@@ -7,14 +7,14 @@ import 'package:ivr_labs/pdf_reader.dart';
 import 'package:ivr_labs/validation.dart';
 import 'package:ivr_labs/var.dart';
 
-class Exp_viewer extends StatelessWidget {
-  List<DocumentSnapshot> documentsOfExperiments;
-  String college, labName, university;
-  List<Paths> paths;
-  GeneralMethods _generalMethods = new GeneralMethods();
+class Expviewer extends StatelessWidget {
+  final List<DocumentSnapshot> documentsOfExperiments;
+  final String college, labName, university;
+  final List<Paths> paths;
+  final GeneralMethods _generalMethods = new GeneralMethods();
   static bool deletingFlag = false;
- 
-  Exp_viewer({
+
+  Expviewer({
     this.paths,
     this.college,
     this.labName,
@@ -56,7 +56,7 @@ class Exp_viewer extends StatelessWidget {
   }
 
   Widget _myBody() {
-    return PDF_File_Reader(
+    return PDFFileReader(
       university: university,
       paths: paths,
       college: college,
@@ -70,8 +70,8 @@ class Exp_viewer extends StatelessWidget {
     var expDir, reportDir;
     String expTemp, reportTemp;
     for (var path in paths) {
-      expTemp = path.exp_path;
-      reportTemp = path.report_path;
+      expTemp = path.expPath;
+      reportTemp = path.reportPath;
       expDir = Directory(expTemp);
       await expDir.deleteSync(recursive: true);
       if (reportTemp != null && reportTemp.length > 10) {

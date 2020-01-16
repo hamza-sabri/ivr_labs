@@ -35,9 +35,13 @@ class DataBaseHelper {
 
   //opening the box for where the labs are stored and get a list of all the downloaded labs
   Future<void> _labHandler() async {
+    try{
+    WidgetsFlutterBinding.ensureInitialized();
     var dir = await getApplicationDocumentsDirectory();
     Hive.init('${dir.path}/hive');
-    Hive.registerAdapter(PathsAdapter(), 0);
+    Hive.registerAdapter(PathsAdapter(), 0);}
+    catch(e){
+    }
     var box = await Hive.openBox('labs');
 
     List temp = box.get('d');

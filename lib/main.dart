@@ -9,17 +9,17 @@ this class is just to lunch the app
 and to handel which page goes first
 */
 class MyApp extends StatelessWidget {
-  final DataBaseHelper _helper = new DataBaseHelper();
   @override
   Widget build(BuildContext context) {
+  final DataBaseHelper _helper = new DataBaseHelper();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: _homePage(),
+      home: _homePage(_helper),
     );
   }
 
   //returns a future builder after opening the hive box and retrive the university name from it
-  Widget _homePage() {
+  Widget _homePage(DataBaseHelper _helper) {
     return FutureBuilder(
       future: _helper.universityHanddler(),
       builder: (context, snapShots) {

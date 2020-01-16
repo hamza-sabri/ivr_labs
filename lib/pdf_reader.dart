@@ -15,26 +15,34 @@ import 'package:http/http.dart' as http;
 this class returns a card when clicked opens the page PDF_Viewer_FAB
 */
 
-class PDF_File_Reader extends StatelessWidget {
-  TextStyle loadingTextStyle = new TextStyle(
-    color: Colors.white,
-    fontSize: 18,
-  );
-  TextStyle tipTextStyle = new TextStyle(
-    fontSize: 20.0,
-  );
-  String college, labName;
-  String university;
-  List<Paths> paths;
-  var context;
-  PDF_File_Reader({
+class PDFFileReader extends StatefulWidget {
+  final String college, labName;
+  final String university;
+ final  List<Paths> paths;
+
+  PDFFileReader({
     this.university,
     this.college,
     this.labName,
     this.paths,
   });
 
-  //---------------------------------------------------------------------------------------------------------------------------------
+  @override
+  _PDFFileReaderState createState() => _PDFFileReaderState();
+}
+
+class _PDFFileReaderState extends State<PDFFileReader> {
+ final TextStyle loadingTextStyle = new TextStyle(
+    color: Colors.white,
+    fontSize: 18,
+  );
+
+ final TextStyle tipTextStyle = new TextStyle(
+    fontSize: 20.0,
+  );
+
+  var context;
+
   @override
   Widget build(BuildContext context) {
     this.context = context;
@@ -47,21 +55,18 @@ class PDF_File_Reader extends StatelessWidget {
     );
   }
 
-  //this method is to call the _columnBuilder method and handel the returned value from it
   Widget _myFutureCardsList() {
     return FutureBuilder(
       future: _columnBuilder(),
       builder: (context, snapShot) {
         if (snapShot.connectionState == ConnectionState.waiting) {
           return _myLoadingTips();
-        }
-        if (snapShot.hasError || snapShot.data == null) {
+        } else if (snapShot.hasError || snapShot.data == null) {
           return Image.asset(
             'lib/photos/cat_loading.gif',
             scale: .0001,
           );
-        }
-        if (snapShot.hasData) {
+        } 
           return Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
             child: SingleChildScrollView(
@@ -70,19 +75,17 @@ class PDF_File_Reader extends StatelessWidget {
               ),
             ),
           );
-        }
       },
     );
   }
 
-  //this method is to loop throw the paths list and creat the cards from the data of the paths list
   Future<List<Widget>> _columnBuilder() async {
     List<Widget> cardsList = [];
-    for (int i = 0; i < paths.length; i++) {
-      if (paths[i].exp_path == null) await _expirementPathSetter(paths[i]);
-      if (paths[i].report_path == null) await _reportPathSetter(paths[i]);
-      cardsList.add(_creatCardFor(paths[i]));
-      if (paths[i].exp_path == null) {
+    for (int i = 0; i < widget.paths.length; i++) {
+      if (widget.paths[i].expPath == null) await _expirementPathSetter(widget.paths[i]);
+      if (widget.paths[i].reportPath == null) await _reportPathSetter(widget.paths[i]);
+      cardsList.add(_creatCardFor(widget.paths[i]));
+      if (widget.paths[i].expPath == null) {
         //we return null so we know that error ocared while retreving data
         return null;
       }
@@ -90,86 +93,83 @@ class PDF_File_Reader extends StatelessWidget {
     return cardsList;
   }
 
-  //as the name sugessts it returns a file with the expirement PDF file in it
   Future<File> _getExpirementFileFromUrl(String url, String expName) async {
     try {
       var data = await http.get(url);
       var bytes = data.bodyBytes;
       var dir = await getApplicationDocumentsDirectory();
-      File file = File("${dir.path}/expirimen$college$labName$expName.pdf");
+      File file = File("${dir.path}/expirimen${widget.college}${widget.labName}$expName.pdf");
       File urlPdf = await file.writeAsBytes(bytes);
       return urlPdf;
-    } catch (e) {}
+    } catch (e) {
+      return null;
+    }
   }
 
-  //as the name sugessts it returns a file with the report PDF file in it
   Future<File> _getReportFileFromUrl(String url, String expName) async {
     try {
       var data = await http.get(url);
       var bytes = data.bodyBytes;
       var dir = await getApplicationDocumentsDirectory();
-      File file = File("${dir.path}/report$college$labName$expName.pdf");
+      File file = File("${dir.path}/report${widget.college}${widget.labName}$expName.pdf");
       File urlPdf = await file.writeAsBytes(bytes);
       return urlPdf;
-    } catch (e) {}
+    } catch (e) {
+      return null;
+    }
   }
 
-  //this method calls the (_getExpirementFileFromUrl()) method  and set the path of it to the urlpath attrepute
   Future<void> _expirementPathSetter(Paths object) async {
-    File f = await _getExpirementFileFromUrl(object.exp_link, object.expName);
+    File f = await _getExpirementFileFromUrl(object.expLink, object.expName);
     if (f != null) {
-      object.exp_path = f.path;
+      object.expPath = f.path;
     }
   }
 
-  //this method calls the (_getReportFileFromUrl()) method  and set the path of it to the urlpath attrepute
   Future<void> _reportPathSetter(Paths object) async {
-    if (object.report_link == null) {
+    if (object.reportLink == null) {
       return;
     }
-    File f = await _getReportFileFromUrl(object.report_link, object.expName);
+    File f = await _getReportFileFromUrl(object.reportLink, object.expName);
     if (f != null) {
-      object.report_path = f.path;
+      object.reportPath = f.path;
     }
   }
 
-  //switch to the pdf_viewer page with fab
   void _navigator1(Paths object) {
-    if (object.exp_path == null ||
-        object.exp_path.length == 0 ||
-        object.report_path == null ||
-        object.report_path.length == 0) {
+    if (object.expPath == null ||
+        object.expPath.length == 0 ||
+        object.reportPath == null ||
+        object.reportPath.length == 0) {
       return;
     }
     Navigator.push(
       this.context,
       MaterialPageRoute(
-        builder: (context) => PDF_Viewer_FAB(
-          urlpath: object.exp_path,
+        builder: (context) => PDFViewerWithFAB(
+          urlpath: object.expPath,
           appBarTitle: object.expName,
-          reportFilePath: object.report_path,
+          reportFilePath: object.reportPath,
         ),
       ),
     );
   }
 
-  //switch to the pdf_viewer page without fab
   void _navigator2(Paths object) {
-    if (object.exp_path == null || object.exp_path.length == 0) {
+    if (object.expPath == null || object.expPath.length == 0) {
       return;
     }
     Navigator.push(
       this.context,
       MaterialPageRoute(
-        builder: (context) => PDF_Viewer(
-          urlpath: object.exp_path,
+        builder: (context) => PDFViewer(
+          urlpath: object.expPath,
           appBarTitle: object.expName,
         ),
       ),
     );
   }
 
-  //takes object of Paths and creat a card Widget with the ListTile in it
   Widget _creatCardFor(Paths object) {
     return Padding(
       padding: EdgeInsets.fromLTRB(8, 10, 8, 0),
@@ -180,11 +180,6 @@ class PDF_File_Reader extends StatelessWidget {
     );
   }
 
-  /*
-  this method returns a ListTile with all the data needed 
-  about the expirement like:
-  number name and adds the youtube button at the end of the ListTile
-  */
   Widget _myListTile(Paths object) {
     return ListTile(
       title: Text(object.expName),
@@ -192,13 +187,13 @@ class PDF_File_Reader extends StatelessWidget {
           ? Text('')
           : Text('experiment number (${object.expNumber})'),
       onTap: () {
-        if (object.report_link != null && object.report_path != null) {
+        if (object.reportLink != null && object.reportPath != null) {
           _navigator1(object);
         } else {
           _navigator2(object);
         }
       },
-      trailing: YoutubeButton(url: object.video_link),
+      trailing: YoutubeButton(url: object.videoLink),
     );
   }
 
@@ -206,11 +201,11 @@ class PDF_File_Reader extends StatelessWidget {
     return StreamBuilder(
       stream: Firestore.instance
           .collection('univ')
-          .document(university)
+          .document(widget.university)
           .collection('colleges')
-          .document(college)
+          .document(widget.college)
           .collection('labs')
-          .document(labName)
+          .document(widget.labName)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -224,7 +219,6 @@ class PDF_File_Reader extends StatelessWidget {
     );
   }
 
-  //this method is to set the loading gif and the tip on thier plases
   Widget _myTips(tips) {
     if (tips == null || tips.length == 0) {
       return _normalStack();
@@ -232,7 +226,7 @@ class PDF_File_Reader extends StatelessWidget {
     return Stack(
       children: <Widget>[
         _widthAndHeightSetUps(),
-        _myLoading_gif(),
+        _myLoadingGif(),
         _tipsBuilder(tips),
       ],
     );
@@ -249,7 +243,6 @@ class PDF_File_Reader extends StatelessWidget {
     );
   }
 
-  //pleas just get in the fucken center all the time
   Widget _centeringTip(tips) {
     return Container(
       width: double.infinity,
@@ -273,7 +266,6 @@ class PDF_File_Reader extends StatelessWidget {
         );
   }
 
-  //got no fucken Idea what it dose
   Widget _widthAndHeightSetUps() {
     return Container(
       width: double.infinity,
@@ -282,19 +274,17 @@ class PDF_File_Reader extends StatelessWidget {
     );
   }
 
-  //this method is to set the loading gif and text on thier plases
   Widget _normalStack() {
     return Stack(
       children: <Widget>[
         _widthAndHeightSetUps(),
-        _myLoading_gif(),
+        _myLoadingGif(),
         _myPositionedText(),
       ],
     );
   }
 
-  //returns the lab_loading gif centered in the screen
-  Widget _myLoading_gif() {
+  Widget _myLoadingGif() {
     return Positioned(
       top: 0,
       right: 0,
@@ -306,7 +296,6 @@ class PDF_File_Reader extends StatelessWidget {
     );
   }
 
-  //returns the position of the loading... text the one with animation
   Widget _myPositionedText() {
     double myCenter = (MediaQuery.of(context).size.width / 2) - 27;
     return Positioned(
@@ -316,11 +305,6 @@ class PDF_File_Reader extends StatelessWidget {
     );
   }
 
-  /*
-  this method returns  a row contains
-  loading text 
-  animation for the three dots folowing it
-  */
   Widget _myAnimatedText() {
     return Row(
       children: <Widget>[
@@ -340,7 +324,6 @@ class PDF_File_Reader extends StatelessWidget {
     );
   }
 
-  //these two methos to creat a random index
   int _randomgenretor(int length) {
     return abs(Random().nextInt(length));
   }

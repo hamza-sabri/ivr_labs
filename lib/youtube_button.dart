@@ -7,28 +7,26 @@ and give it the functionality to open the youtube player on its page
 */
 
 class YoutubeButton extends StatelessWidget {
-  String url;
-  var context;
+  final String url;
   YoutubeButton({this.url});
 
   //------------------------------------------------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
-    this.context = context;
     if (url == null) {
       return Text('');
     }
-    return _myYoutubeButton();
+    return _myYoutubeButton(context);
   }
 
   //this method returns the rasied button to open the youtube
-  Widget _myYoutubeButton() {
+  Widget _myYoutubeButton(BuildContext context) {
     return RaisedButton(
       child: _myIcon(),
       color: Colors.red,
       onPressed: () {
-        _myNavigatore();
+        _myNavigatore(context);
       },
       shape: _myCustomShape(),
     );
@@ -50,7 +48,7 @@ class YoutubeButton extends StatelessWidget {
   }
 
   //this method is to navigate to the youtube player page
-  void _myNavigatore() {
+  void _myNavigatore(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(

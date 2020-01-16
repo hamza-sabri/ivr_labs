@@ -2,7 +2,7 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ivr_labs/paths.dart';
 
-/**
+/*
  * this class is my biggest mistake in this project
  * or in any of my projects 
  * it must be deleted later on 

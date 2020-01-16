@@ -11,8 +11,7 @@ class MyBuilder extends StatefulWidget {
   final bool isLab;
   final TextEditingController controller = new TextEditingController();
   final bool replacment;
-  bool searching;
-  int searchingLength = 0;
+
   MyBuilder({
     this.university,
     this.college,
@@ -27,6 +26,8 @@ class MyBuilder extends StatefulWidget {
 }
 
 class _MyBuilderState extends State<MyBuilder> {
+  bool searching;
+  int searchingLength ;
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -84,7 +85,7 @@ class _MyBuilderState extends State<MyBuilder> {
         controller: widget.controller,
         itemCount: 1,
         itemBuilder: (BuildContext context, int index) {
-          return (widget.searching == null || !widget.searching)
+          return (searching == null || !searching)
               ? _pageBody()
               : _searchingBody();
         },
@@ -127,8 +128,8 @@ class _MyBuilderState extends State<MyBuilder> {
     }
 
     setState(() {
-      widget.searching = value.length > 0;
-      widget.searchingLength = value.length;
+      searching = value.length > 0;
+      searchingLength = value.length;
     });
   }
 }

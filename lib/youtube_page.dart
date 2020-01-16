@@ -6,7 +6,7 @@ import 'package:youtube_player/youtube_player.dart';
 this class is to mange the youtube page and anything in it  
 */
 class YoutubePage extends StatelessWidget {
-  String url;
+ final String url;
   YoutubePage({this.url});
   @override
   Widget build(BuildContext context) {

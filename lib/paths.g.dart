@@ -16,12 +16,12 @@ class PathsAdapter extends TypeAdapter<Paths> {
     return Paths(
       expName: fields[0] as String,
       expNumber: fields[1] as String,
-      exp_link: fields[2] as String,
-      report_link: fields[3] as String,
-      video_link: fields[4] as String,
+      expLink: fields[2] as String,
+      reportLink: fields[3] as String,
+      videoLink: fields[4] as String,
     )
-      ..exp_path = fields[5] as String
-      ..report_path = fields[6] as String;
+      ..expPath = fields[5] as String
+      ..reportPath = fields[6] as String;
   }
 
   @override
@@ -33,14 +33,14 @@ class PathsAdapter extends TypeAdapter<Paths> {
       ..writeByte(1)
       ..write(obj.expNumber)
       ..writeByte(2)
-      ..write(obj.exp_link)
+      ..write(obj.expLink)
       ..writeByte(3)
-      ..write(obj.report_link)
+      ..write(obj.reportLink)
       ..writeByte(4)
-      ..write(obj.video_link)
+      ..write(obj.videoLink)
       ..writeByte(5)
-      ..write(obj.exp_path)
+      ..write(obj.expPath)
       ..writeByte(6)
-      ..write(obj.report_path);
+      ..write(obj.reportPath);
   }
 }

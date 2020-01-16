@@ -13,27 +13,25 @@ class Paths {
   @HiveField(1)
   String expNumber;
   @HiveField(2)
-  String exp_link;
+  String expLink;
   @HiveField(3)
-  String report_link;
+  String reportLink;
   @HiveField(4)
-  String video_link;
+  String videoLink;
   @HiveField(5)
-  String exp_path;
+  String expPath;
   @HiveField(6)
-  String report_path;
+  String reportPath;
 
   Paths({
     this.expName,
     this.expNumber,
-    this.exp_link,
-    this.report_link,
-    this.video_link,
+    this.expLink,
+    this.reportLink,
+    this.videoLink,
+    this.expPath,
+    this.reportPath,
   });
 
-  String toString() {
-    String result =
-        'expName : $expName\nexpNumber : $expNumber\nexpLink : $exp_link\nreport_link : $report_link\nvideo_link : $video_link\nexp_path : $exp_path\nreport_path : $report_path';
-    return result + '\n----------------------------------------------\n';
-  }
+
 }
