@@ -27,7 +27,7 @@ class MyBuilder extends StatefulWidget {
 
 class _MyBuilderState extends State<MyBuilder> {
   bool searching;
-  int searchingLength ;
+  int searchingLength;
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -42,39 +42,12 @@ class _MyBuilderState extends State<MyBuilder> {
   Widget _customScaffold() {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title != null ? widget.title : ''),
-        centerTitle: true,
-        actions: <Widget>[
-          (widget.replacment != null && widget.replacment)
+          title: Text(widget.title != null ? widget.title : ''),
+          centerTitle: true,
+          leading: (widget.replacment != null && widget.replacment)
               ? _myInkWell()
-              : Text(''),
-        ],
-      ),
+              : _normalBack()),
       body: (widget.isLab == null) ? _pageBody() : _pageBodyWithSearch(),
-    );
-  }
-
-  Widget _myInkWell() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-      child: InkWell(
-        child: Icon(
-          Icons.exit_to_app,
-          color: Colors.white,
-        ),
-        onTap: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => new MyBuilder(
-                university: 'univ',
-                from: 'univ',
-                title: 'universities',
-              ),
-            ),
-          );
-        },
-      ),
     );
   }
 
@@ -131,5 +104,56 @@ class _MyBuilderState extends State<MyBuilder> {
       searching = value.length > 0;
       searchingLength = value.length;
     });
+  }
+
+  Widget _myInkWell() {
+    if (widget.university == 'univ') return Text('');
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+      child: InkWell(
+        child: Icon(
+          Icons.arrow_back,
+          color: Colors.white,
+        ),
+        onTap: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => new MyBuilder(
+                university: 'univ',
+                from: 'univ',
+                title: 'universities',
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _normalBack() {
+    if (widget.university == 'univ') return Text('');
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+      child: InkWell(
+        child: Icon(
+          Icons.arrow_back,
+          color: Colors.white,
+        ),
+        onTap: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => new MyBuilder(
+                university: widget.university,
+                from: 'univ',
+                title: widget.university,
+                replacment: true,
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

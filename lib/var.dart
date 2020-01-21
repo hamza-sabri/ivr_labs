@@ -20,8 +20,10 @@ class StaticVars {
   static String currentLabName;
   static List<Paths> paths;
   static List<Paths> labsList;
+  //the hash map of the faviarot labs 
   static HashMap<String, List<Paths>> labsMap;
   static bool isClicked = false;
+  //this list is just to store the names of labs that have been opened
   static List downloadedLabs;
   static List<Paths> expListToPush;
   static List<String> documentsIDs;

@@ -9,8 +9,8 @@ import 'package:dio/dio.dart';
 import 'epx_viewer.dart';
 
 class FaviarotCreator extends StatefulWidget {
- final  String labName;
- final bool isDownloaded;
+  final  String labName;
+  final bool isDownloaded;
   FaviarotCreator({
     this.labName,
     this.isDownloaded,
@@ -80,6 +80,15 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
     return isDownloaded;
   }
 
+  Future<bool> _downloadHandler() async {
+    if (labName != null && !isDownloaded) {
+      paths = StaticVars.paths;
+      _startDownloading();
+    }
+    isDownloaded = !isDownloaded;
+    return isDownloaded;
+  }
+
   Future<void> _startDownloading() async {
     _generalMethods.toastMaker('downloading');
     Expviewer.deletingFlag = false;
@@ -108,15 +117,6 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
     box.put('d', StaticVars.downloadedLabs);
     labsList.put(labName.hashCode, paths);
     StaticVars.add();
-  }
-
-  Future<bool> _downloadHandler() async {
-    if (labName != null && !isDownloaded) {
-      paths = StaticVars.paths;
-      _startDownloading();
-    }
-    isDownloaded = !isDownloaded;
-    return isDownloaded;
   }
 
   Future<void> _downloadingFiles(String url, String type, Paths path) async {
