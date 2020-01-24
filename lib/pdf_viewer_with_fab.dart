@@ -6,13 +6,14 @@ import 'package:ivr_labs/pdf_viewer.dart';
 this class returns a card when clicked opens the page PDF_Viewer
 */
 class PDFViewerWithFAB extends StatefulWidget {
- final String urlpath, appBarTitle, reportFilePath;
+  final String urlpath, appBarTitle, reportFilePath, reportLink;
 
   //-----------------------------------------------------------------------------------------------------------------------------------------
   PDFViewerWithFAB({
     this.urlpath,
     this.appBarTitle,
     this.reportFilePath,
+    this.reportLink,
   });
   @override
   _PDFViewerWithFABState createState() => _PDFViewerWithFABState();
@@ -88,12 +89,14 @@ class _PDFViewerWithFABState extends State<PDFViewerWithFAB> {
     if (widget.reportFilePath == null) {
       return;
     }
+    
     Navigator.push(
       this.context,
       MaterialPageRoute(
         builder: (context) => PDFViewer(
           urlpath: widget.reportFilePath,
           appBarTitle: widget.appBarTitle,
+          reportLink: widget.reportLink,
         ),
       ),
     );

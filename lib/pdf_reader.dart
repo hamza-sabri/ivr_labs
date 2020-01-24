@@ -18,7 +18,7 @@ this class returns a card when clicked opens the page PDF_Viewer_FAB
 class PDFFileReader extends StatefulWidget {
   final String college, labName;
   final String university;
- final  List<Paths> paths;
+  final List<Paths> paths;
 
   PDFFileReader({
     this.university,
@@ -32,12 +32,12 @@ class PDFFileReader extends StatefulWidget {
 }
 
 class _PDFFileReaderState extends State<PDFFileReader> {
- final TextStyle loadingTextStyle = new TextStyle(
+  final TextStyle loadingTextStyle = new TextStyle(
     color: Colors.white,
     fontSize: 18,
   );
 
- final TextStyle tipTextStyle = new TextStyle(
+  final TextStyle tipTextStyle = new TextStyle(
     fontSize: 20.0,
   );
 
@@ -66,15 +66,15 @@ class _PDFFileReaderState extends State<PDFFileReader> {
             'lib/photos/cat_loading.gif',
             scale: .0001,
           );
-        } 
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-            child: SingleChildScrollView(
-              child: Column(
-                children: snapShot.data,
-              ),
+        }
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+          child: SingleChildScrollView(
+            child: Column(
+              children: snapShot.data,
             ),
-          );
+          ),
+        );
       },
     );
   }
@@ -82,8 +82,10 @@ class _PDFFileReaderState extends State<PDFFileReader> {
   Future<List<Widget>> _columnBuilder() async {
     List<Widget> cardsList = [];
     for (int i = 0; i < widget.paths.length; i++) {
-      if (widget.paths[i].expPath == null) await _expirementPathSetter(widget.paths[i]);
-      if (widget.paths[i].reportPath == null) await _reportPathSetter(widget.paths[i]);
+      if (widget.paths[i].expPath == null)
+        await _expirementPathSetter(widget.paths[i]);
+      if (widget.paths[i].reportPath == null)
+        await _reportPathSetter(widget.paths[i]);
       cardsList.add(_creatCardFor(widget.paths[i]));
       if (widget.paths[i].expPath == null) {
         //we return null so we know that error ocared while retreving data
@@ -98,7 +100,8 @@ class _PDFFileReaderState extends State<PDFFileReader> {
       var data = await http.get(url);
       var bytes = data.bodyBytes;
       var dir = await getApplicationDocumentsDirectory();
-      File file = File("${dir.path}/expirimen${widget.college}${widget.labName}$expName.pdf");
+      File file = File(
+          "${dir.path}/expirimen${widget.college}${widget.labName}$expName.pdf");
       File urlPdf = await file.writeAsBytes(bytes);
       return urlPdf;
     } catch (e) {
@@ -111,7 +114,8 @@ class _PDFFileReaderState extends State<PDFFileReader> {
       var data = await http.get(url);
       var bytes = data.bodyBytes;
       var dir = await getApplicationDocumentsDirectory();
-      File file = File("${dir.path}/report${widget.college}${widget.labName}$expName.pdf");
+      File file = File(
+          "${dir.path}/report${widget.college}${widget.labName}$expName.pdf");
       File urlPdf = await file.writeAsBytes(bytes);
       return urlPdf;
     } catch (e) {
@@ -150,6 +154,7 @@ class _PDFFileReaderState extends State<PDFFileReader> {
           urlpath: object.expPath,
           appBarTitle: object.expName,
           reportFilePath: object.reportPath,
+          reportLink: object.reportLink,
         ),
       ),
     );

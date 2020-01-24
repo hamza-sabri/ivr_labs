@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:share/share.dart';
 
 /*
 this class is to open the PDF files to read and interact 
 */
 
 class PDFViewer extends StatefulWidget {
- final String urlpath, appBarTitle;
+  final String urlpath, appBarTitle, reportLink;
   PDFViewer({
     this.urlpath,
     this.appBarTitle,
+    this.reportLink,
   });
   @override
   _PDFViewerState createState() => _PDFViewerState();
@@ -20,6 +22,12 @@ class _PDFViewerState extends State<PDFViewer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          share();
+        },
+        child: Icon(Icons.share),
+      ),
       appBar: AppBar(
         centerTitle: true,
         title: Text(widget.appBarTitle),
@@ -56,5 +64,12 @@ class _PDFViewerState extends State<PDFViewer> {
         });
       },
     );
+  }
+
+  void share() {
+    final RenderBox box = context.findRenderObject();
+    Share.share(widget.reportLink,
+        subject: 'report of the \"${widget.appBarTitle}\" experiment',
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 }

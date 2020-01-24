@@ -32,6 +32,7 @@ dependencies:
   floating_search_bar:
   cupertino_icons: ^0.1.2
   flutter_launcher_icons: "^0.7.0"
+  share:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -44,7 +45,7 @@ dev_dependencies:
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "lib/photos/icon.png"
+  image_path: "lib/photos/icon.jpg"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -63,7 +64,7 @@ flutter:
     - lib/photos/lamb_loading.gif
     - lib/photos/lab_image.jpg
     - lib/photos/lab_loading.gif
-    - lib/photos/icon.png
+    - lib/photos/icon.jpg
   
     # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
