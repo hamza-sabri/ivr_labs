@@ -26,7 +26,9 @@ class _BodyBuilderState extends State<BodyBuilder> {
     this.context = context;
     _setWidthAndHeight();
     _pathSetter();
-    return (widget.streemList != null) ? _myWrap(widget.streemList) : _myStreem();
+    return (widget.streemList != null)
+        ? _myWrap(widget.streemList)
+        : _myStreem();
   }
 
   Widget _myStreem() {
@@ -50,7 +52,8 @@ class _BodyBuilderState extends State<BodyBuilder> {
   void _pathSetter() {
     if (widget.university == 'univ') {
       //this line will bring all the universities in the database
-      firebasePath = Firestore.instance.collection(widget.university).snapshots();
+      firebasePath =
+          Firestore.instance.collection(widget.university).snapshots();
     } else if (widget.from == 'univ') {
       //this path will bring all the colleges in the university
       firebasePath = Firestore.instance
@@ -79,7 +82,9 @@ class _BodyBuilderState extends State<BodyBuilder> {
         child: Image.asset('lib/photos/cat_loading.gif'),
       );
     }
-    if (widget.streemList == null && widget.university != 'univ' && widget.from != 'univ') {
+    if (widget.streemList == null &&
+        widget.university != 'univ' &&
+        widget.from != 'univ') {
       StaticVars.streemList = snapShots.data.documents;
     }
     return _myWrap(snapShots.data.documents);
@@ -113,13 +118,15 @@ class _BodyBuilderState extends State<BodyBuilder> {
               document: document,
               university: widget.university,
               from: widget.from),
-          LabName(name: labName),
+          LabName(name: labName)
         ],
       ),
     );
   }
 
   double _dynamicHeight() {
-    return (widget.university == 'univ' || widget.from == 'univ') ? mySquare - 100 : mySquare;
+    return (widget.university == 'univ' || widget.from == 'univ')
+        ? mySquare - 100
+        : mySquare;
   }
 }

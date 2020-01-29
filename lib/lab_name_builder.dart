@@ -20,7 +20,14 @@ class _LabNameState extends State<LabName> {
 
   void _dynamicText(context) {
     double totalWidth = MediaQuery.of(context).size.width;
-    double size = (totalWidth / 110) + 13;
+    double size = 0;
+    if (totalWidth >= 360 && totalWidth < 380) {
+      size = (totalWidth / 110) + 13;
+    } else if (totalWidth >= 380) {
+      size = 18;
+    } else {
+      size = 14;
+    }
     labNameStyle = new TextStyle(
       fontSize: size,
       color: Colors.white,

@@ -9,7 +9,7 @@ import 'package:dio/dio.dart';
 import 'epx_viewer.dart';
 
 class FaviarotCreator extends StatefulWidget {
-  final  String labName;
+  final String labName;
   final bool isDownloaded;
   FaviarotCreator({
     this.labName,
@@ -92,18 +92,18 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
   Future<void> _startDownloading() async {
     _generalMethods.toastMaker('downloading');
     Expviewer.deletingFlag = false;
-    for (int i = 0; i < paths.length; i++) {
+    for (var path in paths) {
       try {
         if (loop) {
-          await _downloadingFiles(paths[i].expLink, 'exp', paths[i]);
-          await _downloadingFiles(paths[i].reportLink, 'report', paths[i]);
+          await _downloadingFiles(path.expLink, 'exp', path);
+          await _downloadingFiles(path.reportLink, 'report', path);
           if (loop == false) {
             _generalMethods.toastMaker('downloading had been cut');
             break;
           }
         }
       } catch (e) {}
-      _generalMethods.toastMaker('exp $i has been  downladed');
+      _generalMethods.toastMaker('exp ${path.expNumber} has been  downladed');
     }
     if (loop) {
       _adder();
