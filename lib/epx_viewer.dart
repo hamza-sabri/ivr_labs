@@ -8,7 +8,7 @@ import 'package:ivr_labs/var.dart';
 
 class Expviewer extends StatefulWidget {
   final List<DocumentSnapshot> documentsOfExperiments;
-  final String college, labName, university;
+  final String college, labName, university, imageLink;
   final List<Paths> paths;
   static bool deletingFlag = false, later = false;
 
@@ -18,6 +18,7 @@ class Expviewer extends StatefulWidget {
     this.labName,
     this.documentsOfExperiments,
     this.university,
+    this.imageLink,
   });
 
   @override
@@ -41,19 +42,8 @@ class _ExpviewerState extends State<Expviewer> {
         return _back(_generalMethods);
       },
       child: Scaffold(
-        appBar: _myAppBar(),
         body: _myBody(),
       ),
-    );
-  }
-
-  AppBar _myAppBar() {
-    return AppBar(
-      title: Text(widget.labName),
-      centerTitle: true,
-      actions: <Widget>[
-        _myFav(),
-      ],
     );
   }
 
@@ -71,6 +61,8 @@ class _ExpviewerState extends State<Expviewer> {
       paths: widget.paths,
       college: widget.college,
       labName: widget.labName,
+      fav: _myFav(),
+      imageLink: widget.imageLink,
     );
   }
 

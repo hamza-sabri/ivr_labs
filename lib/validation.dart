@@ -8,7 +8,8 @@ import 'package:ivr_labs/var.dart';
 import 'epx_viewer.dart';
 
 class GeneralMethods {
-  final String labName;
+  final String universityName, collegeName;
+  String labName;
   final TextStyle style = TextStyle(
     color: Colors.white,
     fontSize: 12,
@@ -21,12 +22,103 @@ class GeneralMethods {
     fontSize: 18,
   );
   final context, documentsOfExperiments, paths;
+
   GeneralMethods({
     this.labName,
     this.context,
     this.documentsOfExperiments,
     this.paths,
+    this.universityName,
+    this.collegeName,
   });
+
+//-------------------------------------------------------------------------------------------------
+//this method is to push the reports and the stuff to firebase
+  bool push(List<String> data, String id) {
+    if (_validate(data)) {
+      _addDataToFireBase(data, id);
+      return true;
+    }
+    toastMaker('failed for the mentioned reason');
+    return false;
+  }
+
+  bool createNewUniversity(String newUniversityName, String imageLink) {
+    Firestore.instance.collection('univ').document(newUniversityName);
+    Firestore.instance
+        .collection('univ')
+        .document(newUniversityName)
+        .setData({'image': imageLink});
+    return true;
+  }
+
+  bool createNewCollege(String newCollegeName, String imageLink) {
+    Firestore.instance
+        .collection('univ')
+        .document(universityName)
+        .collection('colleges')
+        .document(newCollegeName)
+        .setData({'image': imageLink});
+    return true;
+  }
+
+  bool createNewLab(String newLabName, String imageLink) {
+    Firestore.instance
+        .collection('univ')
+        .document(universityName)
+        .collection('colleges')
+        .document(collegeName)
+        .collection('labs')
+        .document(newLabName)
+        .setData({'image': imageLink});
+    return true;
+  }
+
+  void _addDataToFireBase(data, id) {
+    Firestore.instance
+        .collection('univ')
+        .document(universityName)
+        .collection('colleges')
+        .document(collegeName)
+        .collection('labs')
+        .document(labName)
+        .collection('exp')
+        .document(id)
+        .setData({
+      'expName': data[0],
+      'expNumber': data[1],
+      'expLink': data[2],
+      'report_link': data[3],
+      'video_link': data[4],
+    });
+  }
+
+//expName -> 0
+//expNumber -> 1
+//expLink -> 2
+//reportLink -> 3
+//VideoLink -> 4
+  bool _validate(List<String> data) {
+    if (data[0] == null || data[0].length < 2) {
+      toastMaker('not valid experiment name');
+      return false;
+    }
+    if (data[1] == null || data[1].length > 3) {
+      toastMaker('not valid experiment number');
+      return false;
+    }
+    if (data[2] == null || data[2].length < 10) {
+      toastMaker('not valid experiment link');
+      return false;
+    }
+    if (data[3] == null || data[3].length < 2) {
+      toastMaker('not valid report link');
+      return false;
+    }
+    return true;
+  }
+
+  //----------------------------------------------------------------------------------------------------
   bool syncronisingLap = false;
 
   void toastMaker(String msg) {

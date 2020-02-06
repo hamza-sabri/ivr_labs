@@ -54,31 +54,38 @@ class _MyBuilderState extends State<MyBuilder> {
   Widget _pageBodyWithSearch() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
-      child: FloatingSearchBar.builder(
-        controller: widget.controller,
-        itemCount: 1,
-        itemBuilder: (BuildContext context, int index) {
-          return (searching == null || !searching)
-              ? _pageBody()
-              : _searchingBody();
-        },
-        onChanged: (String value) {
-          _changeHandler(value);
-        },
-        leading: Icon(Icons.search),
-        decoration: InputDecoration.collapsed(
-          hintText: "Search...",
-        ),
+      child: _myFloating(),
+    );
+  }
+
+  Widget _myFloating() {
+    return FloatingSearchBar.builder(
+      controller: widget.controller,
+      itemCount: 1,
+      itemBuilder: (BuildContext context, int index) {
+        return (searching == null || !searching)
+            ? _pageBody()
+            : _searchingBody();
+      },
+      onChanged: (String value) {
+        _changeHandler(value);
+      },
+      leading: Icon(Icons.search),
+      decoration: InputDecoration.collapsed(
+        hintText: "Search...",
       ),
     );
   }
 
   //just to call the BodyBuilder class
   Widget _pageBody() {
-    return BodyBuilder(
-      from: widget.from,
-      university: widget.university,
-      college: widget.college,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+      child: BodyBuilder(
+        from: widget.from,
+        university: widget.university,
+        college: widget.college,
+      ),
     );
   }
 
@@ -141,19 +148,11 @@ class _MyBuilderState extends State<MyBuilder> {
           color: Colors.white,
         ),
         onTap: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => new MyBuilder(
-                university: widget.university,
-                from: 'univ',
-                title: widget.university,
-                replacment: true,
-              ),
-            ),
-          );
+          StaticVars.isClicked = false;
+          Navigator.pop(context);
         },
       ),
     );
   }
+
 }

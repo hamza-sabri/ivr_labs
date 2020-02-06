@@ -4,19 +4,22 @@ import 'package:hive/hive.dart';
 import 'package:ivr_labs/builder.dart';
 import 'package:ivr_labs/paths.dart';
 import 'package:ivr_labs/var.dart';
+import 'package:page_transition/page_transition.dart';
 import 'epx_viewer.dart';
 
 class CardBuilder extends StatefulWidget {
-  final String path, college, university, from;
-  final  document;
-  final double mySquare;
+  final String path, college, university, from, labName;
+  final document;
+  final double width, height;
   CardBuilder({
     this.path,
     this.document,
-    this.mySquare,
+    this.width,
+    this.height,
     this.college,
     this.university,
     this.from,
+    this.labName,
   });
 
   @override
@@ -24,6 +27,7 @@ class CardBuilder extends StatefulWidget {
 }
 
 class _CardBuilderState extends State<CardBuilder> {
+  String imageLink;
   var context;
   @override
   Widget build(BuildContext context) {
@@ -32,9 +36,7 @@ class _CardBuilderState extends State<CardBuilder> {
   }
 
   Widget _customLabCard() {
-    return Card(
-      color: Colors.white.withOpacity(0),
-      elevation: 0,
+    return Center(
       child: InkWell(
         onTap: () {
           if (!StaticVars.isClicked) {
@@ -75,18 +77,19 @@ class _CardBuilderState extends State<CardBuilder> {
   }
 
   Widget _myFadingImage(String path) {
+    imageLink = path;
     return ClipRRect(
-      borderRadius: BorderRadius.circular(15),
+      borderRadius: BorderRadius.circular(25),
       child: FadeInImage.assetNetwork(
           fit: BoxFit.fill,
-          width: widget.mySquare,
-          height: widget.mySquare,
+          width: widget.width,
+          height: widget.height,
           placeholder: 'lib/photos/lamb_loading.gif',
           image: path),
     );
   }
 
-  void _navigator(List<DocumentSnapshot> documents) {
+  Future<void> _navigator(List<DocumentSnapshot> documents) async {
     if (StaticVars.paths.length == 0) {
       _addToListOfPaths(documents);
     }
@@ -94,13 +97,17 @@ class _CardBuilderState extends State<CardBuilder> {
     if (StaticVars.paths.length > 0) {
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => new Expviewer(
-              university: widget.university,
-              college: widget.college,
-              labName: StaticVars.currentLabName,
-              paths: StaticVars.paths,
-              documentsOfExperiments: documents),
+        PageTransition(
+          type: PageTransitionType.fade,
+          duration: Duration(milliseconds: 1000),
+          child: Expviewer(
+            university: widget.university,
+            college: widget.college,
+            labName: StaticVars.currentLabName,
+            paths: StaticVars.paths,
+            documentsOfExperiments: documents,
+            imageLink: imageLink,
+          ),
         ),
       );
     }
@@ -122,7 +129,7 @@ class _CardBuilderState extends State<CardBuilder> {
 
   void _dynamicIVR(String currentDocumentID) {
     if (widget.university == 'univ') {
-    StaticVars.isClicked = false;
+      StaticVars.isClicked = false;
       Box universityBox = Hive.box('universityName');
       universityBox.put('university_name', currentDocumentID);
       //up to this line it's good
@@ -138,7 +145,7 @@ class _CardBuilderState extends State<CardBuilder> {
         ),
       );
     } else if (widget.from == 'univ') {
-    StaticVars.isClicked = false;
+      StaticVars.isClicked = false;
       //to refell the list again
       StaticVars.streemList = null;
       Navigator.push(

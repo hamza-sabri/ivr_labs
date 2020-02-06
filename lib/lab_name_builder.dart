@@ -24,9 +24,9 @@ class _LabNameState extends State<LabName> {
     if (totalWidth >= 360 && totalWidth < 380) {
       size = (totalWidth / 110) + 13;
     } else if (totalWidth >= 380) {
-      size = 18;
+      size = 16;
     } else {
-      size = 14;
+      size = 12;
     }
     labNameStyle = new TextStyle(
       fontSize: size,
@@ -45,6 +45,7 @@ class _LabNameState extends State<LabName> {
           child: Text(
             name,
             style: labNameStyle,
+            textAlign: TextAlign.center,
           ),
         ),
       ),

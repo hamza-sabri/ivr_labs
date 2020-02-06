@@ -16,16 +16,18 @@ this class returns a card when clicked opens the page PDF_Viewer_FAB
 */
 
 class PDFFileReader extends StatefulWidget {
-  final String college, labName;
+  final String college, labName, imageLink;
   final String university;
   final List<Paths> paths;
+  final Widget fav;
 
-  PDFFileReader({
-    this.university,
-    this.college,
-    this.labName,
-    this.paths,
-  });
+  PDFFileReader(
+      {this.university,
+      this.college,
+      this.labName,
+      this.paths,
+      this.fav,
+      this.imageLink});
 
   @override
   _PDFFileReaderState createState() => _PDFFileReaderState();
@@ -67,27 +69,66 @@ class _PDFFileReaderState extends State<PDFFileReader> {
             scale: .0001,
           );
         }
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-          child: SingleChildScrollView(
-            child: Column(
-              children: snapShot.data,
-            ),
-          ),
-        );
+        return _customScroll(snapShot);
       },
+    );
+  }
+
+  Widget _customScroll(snapShot) {
+    return CustomScrollView(
+      slivers: <Widget>[
+        _mySliver(),
+        _sliverList(snapShot.data),
+      ],
+    );
+  }
+
+  _mySliver() {
+    return SliverAppBar(
+      title: Text(
+        widget.labName,
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      pinned: true,
+      centerTitle: true,
+      elevation: 20,
+      expandedHeight: 200,
+      actions: <Widget>[widget.fav],
+      flexibleSpace: FlexibleSpaceBar(
+        background: _customStack(),
+      ),
+    );
+  }
+
+  Widget _customStack() {
+    return FadeInImage.assetNetwork(
+      fit: BoxFit.cover,
+      placeholder: 'lib/photos/lamb_loading.gif',
+      image: widget.imageLink,
+    );
+  }
+
+  SliverList _sliverList(List<Widget> expList) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return expList[index];
+        },
+        childCount: expList.length,
+      ),
     );
   }
 
   Future<List<Widget>> _columnBuilder() async {
     List<Widget> cardsList = [];
-    for (int i = 0; i < widget.paths.length; i++) {
-      if (widget.paths[i].expPath == null)
-        await _expirementPathSetter(widget.paths[i]);
-      if (widget.paths[i].reportPath == null)
-        await _reportPathSetter(widget.paths[i]);
-      cardsList.add(_creatCardFor(widget.paths[i]));
-      if (widget.paths[i].expPath == null) {
+    for (Paths path in widget.paths) {
+      if (path.expPath == null) await _expirementPathSetter(path);
+      if (path.reportPath == null) await _reportPathSetter(path);
+      cardsList.add(_creatCardFor(path));
+      if (path.expPath == null) {
         //we return null so we know that error ocared while retreving data
         return null;
       }
@@ -187,7 +228,9 @@ class _PDFFileReaderState extends State<PDFFileReader> {
 
   Widget _myListTile(Paths object) {
     return ListTile(
-      title: Text(object.expName),
+      title: Text((object.expName.length > 50)
+          ? object.expName.substring(0, 50) + '...'
+          : object.expName),
       subtitle: (object.expNumber == null)
           ? Text('')
           : Text('experiment number (${object.expNumber})'),
@@ -285,6 +328,11 @@ class _PDFFileReaderState extends State<PDFFileReader> {
         _widthAndHeightSetUps(),
         _myLoadingGif(),
         _myPositionedText(),
+        Positioned(
+          top: 50,
+          right: 8,
+          child: widget.fav,
+        )
       ],
     );
   }

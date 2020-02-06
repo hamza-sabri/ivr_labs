@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ivr_labs/card_builder.dart';
 import 'package:ivr_labs/lab_name_builder.dart';
 import 'package:ivr_labs/var.dart';
+import 'breathing_animation.dart';
 
 class BodyBuilder extends StatefulWidget {
   final String college, university, from;
@@ -43,9 +44,9 @@ class _BodyBuilderState extends State<BodyBuilder> {
   void _setWidthAndHeight() {
     int div = (widget.university == 'univ' || widget.from == 'univ') ? 0 : 1;
     if (MediaQuery.of(context).orientation == Orientation.landscape) {
-      mySquare = MediaQuery.of(context).size.width / (div + 2) - 10;
+      mySquare = MediaQuery.of(context).size.width / (div + 2) - 20;
     } else {
-      mySquare = MediaQuery.of(context).size.width / (div + 1) - 10;
+      mySquare = MediaQuery.of(context).size.width / (div + 1) - 18;
     }
   }
 
@@ -106,18 +107,34 @@ class _BodyBuilderState extends State<BodyBuilder> {
     String path = document['image'];
     String labName = document.documentID;
 
-    return Container(
-      width: mySquare,
-      height: _dynamicHeight(),
+    return BreathingAnimation(
+        width: mySquare,
+        height: _dynamicHeight(),
+        myChild: SizedBox(
+          width: mySquare + 2,
+          height: _dynamicHeight() + 2,
+          child: _customCard(path, document, labName),
+        ),
+       );
+  }
+
+  Widget _customCard(path, document, labName) {
+    return Card(
+      elevation: 9,
+      borderOnForeground: false,
+      color: Colors.white.withOpacity(0),
       child: Stack(
         children: <Widget>[
           CardBuilder(
-              college: widget.college,
-              mySquare: mySquare,
-              path: path,
-              document: document,
-              university: widget.university,
-              from: widget.from),
+            college: widget.college,
+            width: mySquare,
+            height: _dynamicHeight(),
+            path: path,
+            document: document,
+            university: widget.university,
+            from: widget.from,
+            labName: labName,
+          ),
           LabName(name: labName)
         ],
       ),

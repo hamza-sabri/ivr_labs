@@ -34,7 +34,6 @@ class _PDFViewerWithFABState extends State<PDFViewerWithFAB> {
         floatingActionButton: _myFAB(),
       ),
       onWillPop: () async {
-        //do your thing here to make the love botton statfull
         return true;
       },
     );
@@ -89,7 +88,7 @@ class _PDFViewerWithFABState extends State<PDFViewerWithFAB> {
     if (widget.reportFilePath == null) {
       return;
     }
-    
+
     Navigator.push(
       this.context,
       MaterialPageRoute(
