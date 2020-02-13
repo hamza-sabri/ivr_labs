@@ -342,6 +342,20 @@ class _PDFFileReaderState extends State<PDFFileReader> {
           top: 50,
           right: 8,
           child: widget.fav,
+        ),
+        Positioned(
+          top: 35,
+          left: 18,
+          child: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
         )
       ],
     );

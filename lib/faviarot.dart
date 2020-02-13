@@ -105,6 +105,8 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
     localDataCollection.deletingFlag = false;
     for (var path in paths) {
       try {
+              // to prevent opening a new lab while downloading
+      localDataCollection.isClicked = true;
         if (loop) {
           await _downloadingFiles(path.expLink, 'exp', path);
           await _downloadingFiles(path.reportLink, 'report', path);
@@ -115,8 +117,10 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
         }
       } catch (e) {}
       _generalMethods.toastMaker('exp ${path.expNumber} has been  downladed');
+     
     }
-    localDataCollection.isClicked = false;
+     //to enable opening labs after downloading
+      localDataCollection.isClicked = false;
     if (loop) {
       _adder();
     }
@@ -135,6 +139,7 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
     if (url == null || path == null || url.length < 10) {
       return;
     }
+
     Dio dio = new Dio();
     String savedPath;
     try {
@@ -142,6 +147,7 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
       savedPath = '${dir.path}/$labName${path.expName}$type.pdf';
       await dio.download(url, savedPath, onReceiveProgress: (rec, total) {});
       type == 'exp' ? path.expPath = savedPath : path.reportPath = savedPath;
+    
     } catch (e) {}
   }
 }

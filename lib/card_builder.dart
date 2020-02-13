@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:ivr_labs/builder.dart';
 import 'package:ivr_labs/paths.dart';
+import 'package:ivr_labs/validation.dart';
 import 'package:page_transition/page_transition.dart';
 import 'data_collection.dart';
 import 'epx_viewer.dart';
@@ -51,6 +52,10 @@ class _CardBuilderState extends State<CardBuilder> {
         onTap: () {
           if (!localDataCollection.isClicked) {
             _pathSetter(widget.document);
+          } else {
+            GeneralMethods methods = GeneralMethods(dataCollection: null);
+            methods.toastMaker(
+                'لا يمكن فتح أكثر من مختبر في نفس الوقت ... الرجاء الانتظار حتى الانتهاء من تحميل المختبر الحالي');
           }
         },
         child: widget.path != null
