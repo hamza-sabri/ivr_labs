@@ -11,9 +11,10 @@ and to handel which page goes first
 */
 class MyApp extends StatelessWidget {
   final DataCollection dataCollection = DataCollection();
+  
   @override
   Widget build(BuildContext context) {
-    
+  
   final DataBaseHelper _helper = new DataBaseHelper(dataCollection);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
