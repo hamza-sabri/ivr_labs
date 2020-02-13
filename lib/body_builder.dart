@@ -1,18 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ivr_labs/card_builder.dart';
+import 'package:ivr_labs/data_collection.dart';
 import 'package:ivr_labs/lab_name_builder.dart';
-import 'package:ivr_labs/var.dart';
 import 'breathing_animation.dart';
 
 class BodyBuilder extends StatefulWidget {
   final String college, university, from;
   final List<DocumentSnapshot> streemList;
+  final DataCollection dataCollection;
   BodyBuilder({
     this.college,
     this.from,
     this.university,
     this.streemList,
+    @required this.dataCollection,
   });
 
   @override
@@ -22,6 +24,13 @@ class BodyBuilder extends StatefulWidget {
 class _BodyBuilderState extends State<BodyBuilder> {
   var context, firebasePath;
   double mySquare;
+  DataCollection localDataCollection;
+  @override
+  void initState() {
+    super.initState();
+    localDataCollection = widget.dataCollection;
+  }
+
   @override
   Widget build(BuildContext context) {
     this.context = context;
@@ -86,7 +95,7 @@ class _BodyBuilderState extends State<BodyBuilder> {
     if (widget.streemList == null &&
         widget.university != 'univ' &&
         widget.from != 'univ') {
-      StaticVars.streemList = snapShots.data.documents;
+      localDataCollection.streemList = snapShots.data.documents;
     }
     return _myWrap(snapShots.data.documents);
   }
@@ -108,14 +117,14 @@ class _BodyBuilderState extends State<BodyBuilder> {
     String labName = document.documentID;
 
     return BreathingAnimation(
-        width: mySquare,
-        height: _dynamicHeight(),
-        myChild: SizedBox(
-          width: mySquare + 2,
-          height: _dynamicHeight() + 2,
-          child: _customCard(path, document, labName),
-        ),
-       );
+      width: mySquare,
+      height: _dynamicHeight(),
+      myChild: SizedBox(
+        width: mySquare + 2,
+        height: _dynamicHeight() + 2,
+        child: _customCard(path, document, labName),
+      ),
+    );
   }
 
   Widget _customCard(path, document, labName) {
@@ -134,6 +143,7 @@ class _BodyBuilderState extends State<BodyBuilder> {
             university: widget.university,
             from: widget.from,
             labName: labName,
+            dataCollection: localDataCollection,
           ),
           LabName(name: labName)
         ],

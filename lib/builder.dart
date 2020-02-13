@@ -1,6 +1,6 @@
 import 'package:floating_search_bar/floating_search_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:ivr_labs/var.dart';
+import 'package:ivr_labs/data_collection.dart';
 import 'body_builder.dart';
 
 /*
@@ -11,7 +11,7 @@ class MyBuilder extends StatefulWidget {
   final bool isLab;
   final TextEditingController controller = new TextEditingController();
   final bool replacment;
-
+  final DataCollection dataCollection;
   MyBuilder({
     this.university,
     this.college,
@@ -19,6 +19,7 @@ class MyBuilder extends StatefulWidget {
     this.title,
     this.isLab,
     this.replacment,
+    @required this.dataCollection,
   });
 
   @override
@@ -28,12 +29,19 @@ class MyBuilder extends StatefulWidget {
 class _MyBuilderState extends State<MyBuilder> {
   bool searching;
   int searchingLength;
+  DataCollection localDataCollection;
+  @override
+  void initState() {
+    super.initState();
+    localDataCollection = widget.dataCollection;
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       child: _customScaffold(),
       onWillPop: () async {
-        StaticVars.isClicked = false;
+        localDataCollection.isClicked = false;
         return true;
       },
     );
@@ -85,6 +93,7 @@ class _MyBuilderState extends State<MyBuilder> {
         from: widget.from,
         university: widget.university,
         college: widget.college,
+        dataCollection: localDataCollection,
       ),
     );
   }
@@ -92,18 +101,19 @@ class _MyBuilderState extends State<MyBuilder> {
   //just to call the BodyBuilder class with the searching list
   Widget _searchingBody() {
     return BodyBuilder(
-      streemList: StaticVars.searchingList,
+      streemList: localDataCollection.searchingList,
       from: widget.from,
       university: widget.university,
       college: widget.college,
+      dataCollection: localDataCollection,
     );
   }
 
   void _changeHandler(String value) {
-    StaticVars.searchingList = [];
-    for (var doc in StaticVars.streemList) {
+    localDataCollection.searchingList = [];
+    for (var doc in localDataCollection.streemList) {
       if (doc.documentID.contains(value)) {
-        StaticVars.searchingList.add(doc);
+        localDataCollection.searchingList.add(doc);
       }
     }
 
@@ -127,6 +137,7 @@ class _MyBuilderState extends State<MyBuilder> {
             context,
             MaterialPageRoute(
               builder: (context) => new MyBuilder(
+                dataCollection: localDataCollection,
                 university: 'univ',
                 from: 'univ',
                 title: 'universities',
@@ -148,7 +159,7 @@ class _MyBuilderState extends State<MyBuilder> {
           color: Colors.white,
         ),
         onTap: () {
-          StaticVars.isClicked = false;
+          localDataCollection.isClicked = false;
           Navigator.pop(context);
         },
       ),

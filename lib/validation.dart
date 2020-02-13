@@ -1,11 +1,9 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ivr_labs/data_collection.dart';
 import 'package:ivr_labs/paths.dart';
-import 'package:ivr_labs/var.dart';
-import 'epx_viewer.dart';
 
 class GeneralMethods {
   final String universityName, collegeName;
@@ -23,6 +21,7 @@ class GeneralMethods {
   );
   final context, documentsOfExperiments, paths;
 
+  final DataCollection dataCollection;
   GeneralMethods({
     this.labName,
     this.context,
@@ -30,6 +29,7 @@ class GeneralMethods {
     this.paths,
     this.universityName,
     this.collegeName,
+    @required this.dataCollection,
   });
 
 //-------------------------------------------------------------------------------------------------
@@ -132,8 +132,6 @@ class GeneralMethods {
         fontSize: 14.0);
   }
 
-  //check the non since thing that goes her
-  //this method should belong to the static methods not her !!!
   Future<void> deletePaths() async {
     await _deleteHandler();
     if (!syncronisingLap) {
@@ -141,10 +139,10 @@ class GeneralMethods {
     } else {
       toastMaker('تمت المزامنة بنجاح يمكنك الان اعادة تحميل المختبر');
     }
-    StaticVars.labsMap.remove(labName);
-    StaticVars.currentLabName = null;
-    StaticVars.downloadedLabs.remove(labName);
-    Expviewer.deletingFlag = false;
+    dataCollection.labsMap.remove(labName);
+    dataCollection.currentLabName = null;
+    dataCollection.downloadedLabs.remove(labName);
+    dataCollection.deletingFlag = false;
   }
 
   Future<void> _deleteHandler() async {
@@ -169,8 +167,8 @@ class GeneralMethods {
   //from this line the rest of the method are to make sure that the user have the latest data
   bool hadChanges() {
     //if the user selected later the dialog will not appear
-    if (Expviewer.later) return false;
-    List<Paths> list = StaticVars.labsMap[labName];
+    if (dataCollection.later) return false;
+    List<Paths> list = dataCollection.labsMap[labName];
     if (list == null) return false;
     if (list.length != documentsOfExperiments.length) return true;
     for (int i = 0; i < list.length; i++) {
@@ -227,14 +225,14 @@ class GeneralMethods {
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
           child: _customButton('لاحقا', () {
-            Expviewer.later = true;
+            dataCollection.later = true;
             toastMaker(
                 'تحذير قد تكون البيانات المحملة حاليا ناقصة او مغلوطة يرجى مزامنة المختبر في اقرب وقت');
             Navigator.of(context).pop();
           }),
         ),
         _customButton('بدء المزامنة', () {
-          StaticVars.downloadedLabs.remove(labName);
+          dataCollection.downloadedLabs.remove(labName);
           _syncHandler(context);
         }),
       ],
@@ -246,7 +244,7 @@ class GeneralMethods {
     await deletePaths();
     Navigator.of(context).pop();
     Navigator.of(context).pop(context);
-    StaticVars.isClicked = false;
+    dataCollection.isClicked = false;
   }
 
   _customButton(String msg, action()) {

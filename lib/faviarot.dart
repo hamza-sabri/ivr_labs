@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:ivr_labs/data_collection.dart';
 import 'package:ivr_labs/paths.dart';
 import 'package:ivr_labs/validation.dart';
-import 'package:ivr_labs/var.dart';
 import 'package:like_button/like_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
-import 'epx_viewer.dart';
 
 class FaviarotCreator extends StatefulWidget {
   final String labName;
   final bool isDownloaded;
+  final DataCollection dataCollection;
   FaviarotCreator({
     this.labName,
     this.isDownloaded,
+    @required this.dataCollection,
   });
   @override
   _FaviarotCreatorState createState() => _FaviarotCreatorState();
@@ -29,10 +30,20 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
   List<Paths> paths;
   bool loop = true;
   var box, labsList;
-  GeneralMethods _generalMethods = new GeneralMethods();
+  GeneralMethods _generalMethods;
+  DataCollection localDataCollection;
+
+  @override
+  void initState() {
+    super.initState();
+    localDataCollection = widget.dataCollection;
+  }
 
   @override
   Widget build(BuildContext context) {
+    _generalMethods = GeneralMethods(
+      dataCollection: localDataCollection,
+    );
     _getSuper();
     return _downloadedLikeButton();
   }
@@ -72,17 +83,17 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
 
   Future<bool> _deleteFilesFromDB() async {
     _generalMethods.toastMaker('deleting');
-    StaticVars.downloadedLabs.remove(labName);
-    box.put('d', StaticVars.downloadedLabs);
+    localDataCollection.downloadedLabs.remove(labName);
+    box.put('d', localDataCollection.downloadedLabs);
     isDownloaded = !isDownloaded;
     loop = false;
-    Expviewer.deletingFlag = true;
+    localDataCollection.deletingFlag = true;
     return isDownloaded;
   }
 
   Future<bool> _downloadHandler() async {
     if (labName != null && !isDownloaded) {
-      paths = StaticVars.paths;
+      paths = localDataCollection.paths;
       _startDownloading();
     }
     isDownloaded = !isDownloaded;
@@ -91,7 +102,7 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
 
   Future<void> _startDownloading() async {
     _generalMethods.toastMaker('downloading');
-    Expviewer.deletingFlag = false;
+    localDataCollection.deletingFlag = false;
     for (var path in paths) {
       try {
         if (loop) {
@@ -105,6 +116,7 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
       } catch (e) {}
       _generalMethods.toastMaker('exp ${path.expNumber} has been  downladed');
     }
+    localDataCollection.isClicked = false;
     if (loop) {
       _adder();
     }
@@ -112,11 +124,11 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
 
   void _adder() {
     _generalMethods.toastMaker('lab has been downloaded successfully');
-    StaticVars.downloadedLabs.add(labName);
-    StaticVars.currentLabName = labName;
-    box.put('d', StaticVars.downloadedLabs);
+    localDataCollection.downloadedLabs.add(labName);
+    localDataCollection.currentLabName = labName;
+    box.put('d', localDataCollection.downloadedLabs);
     labsList.put(labName.hashCode, paths);
-    StaticVars.add();
+    localDataCollection.add();
   }
 
   Future<void> _downloadingFiles(String url, String type, Paths path) async {

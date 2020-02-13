@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:ivr_labs/builder.dart';
 import 'package:ivr_labs/paths.dart';
-import 'package:ivr_labs/var.dart';
 import 'package:page_transition/page_transition.dart';
+import 'data_collection.dart';
 import 'epx_viewer.dart';
 
 class CardBuilder extends StatefulWidget {
   final String path, college, university, from, labName;
   final document;
   final double width, height;
+  final DataCollection dataCollection;
   CardBuilder({
     this.path,
     this.document,
@@ -20,6 +21,7 @@ class CardBuilder extends StatefulWidget {
     this.university,
     this.from,
     this.labName,
+    @required this.dataCollection,
   });
 
   @override
@@ -29,6 +31,14 @@ class CardBuilder extends StatefulWidget {
 class _CardBuilderState extends State<CardBuilder> {
   String imageLink;
   var context;
+  DataCollection localDataCollection;
+
+  @override
+  void initState() {
+    super.initState();
+    localDataCollection = widget.dataCollection;
+  }
+
   @override
   Widget build(BuildContext context) {
     this.context = context;
@@ -39,7 +49,7 @@ class _CardBuilderState extends State<CardBuilder> {
     return Center(
       child: InkWell(
         onTap: () {
-          if (!StaticVars.isClicked) {
+          if (!localDataCollection.isClicked) {
             _pathSetter(widget.document);
           }
         },
@@ -52,7 +62,7 @@ class _CardBuilderState extends State<CardBuilder> {
 
   void _pathSetter(document) {
     String currentDocumentID = document.documentID;
-    StaticVars.isClicked = true;
+    localDataCollection.isClicked = true;
     _dynamicIVR(currentDocumentID);
     _gettingDataFromFireBase(document, currentDocumentID);
   }
@@ -61,15 +71,16 @@ class _CardBuilderState extends State<CardBuilder> {
     if (widget.university == 'univ' || widget.from == 'univ') return;
     Future<QuerySnapshot> d = _getPath(currentDocumentID);
     d.then((onValue) {
-      if (StaticVars.currentLabName == null ||
-          StaticVars.currentLabName != currentDocumentID) {
-        StaticVars.add();
-        if (StaticVars.contains(currentDocumentID)) {
-          StaticVars.paths = StaticVars.myList(currentDocumentID);
-          StaticVars.currentLabName = document.documentID;
+      if (localDataCollection.currentLabName == null ||
+          localDataCollection.currentLabName != currentDocumentID) {
+        localDataCollection.add();
+        if (localDataCollection.contains(currentDocumentID)) {
+          localDataCollection
+            ..paths = localDataCollection.myList(currentDocumentID);
+          localDataCollection.currentLabName = document.documentID;
         } else {
-          StaticVars.paths = [];
-          StaticVars.currentLabName = document.documentID;
+          localDataCollection.paths = [];
+          localDataCollection.currentLabName = document.documentID;
         }
       }
       _navigator(onValue.documents);
@@ -90,23 +101,24 @@ class _CardBuilderState extends State<CardBuilder> {
   }
 
   Future<void> _navigator(List<DocumentSnapshot> documents) async {
-    if (StaticVars.paths.length == 0) {
+    if (localDataCollection.paths.length == 0) {
       _addToListOfPaths(documents);
     }
 
-    if (StaticVars.paths.length > 0) {
+    if (localDataCollection.paths.length > 0) {
       Navigator.push(
         context,
         PageTransition(
           type: PageTransitionType.fade,
-          duration: Duration(milliseconds: 1000),
+          duration: Duration(milliseconds: 850),
           child: Expviewer(
             university: widget.university,
             college: widget.college,
-            labName: StaticVars.currentLabName,
-            paths: StaticVars.paths,
+            labName: localDataCollection.currentLabName,
+            paths: localDataCollection.paths,
             documentsOfExperiments: documents,
             imageLink: imageLink,
+            dataCollection: localDataCollection,
           ),
         ),
       );
@@ -115,7 +127,7 @@ class _CardBuilderState extends State<CardBuilder> {
 
   void _addToListOfPaths(documents) {
     for (var doc in documents) {
-      StaticVars.paths.add(
+      localDataCollection.paths.add(
         new Paths(
           expLink: doc['expLink'],
           expName: doc['expName'],
@@ -129,7 +141,7 @@ class _CardBuilderState extends State<CardBuilder> {
 
   void _dynamicIVR(String currentDocumentID) {
     if (widget.university == 'univ') {
-      StaticVars.isClicked = false;
+      localDataCollection.isClicked = false;
       Box universityBox = Hive.box('universityName');
       universityBox.put('university_name', currentDocumentID);
       //up to this line it's good
@@ -141,13 +153,14 @@ class _CardBuilderState extends State<CardBuilder> {
             university: currentDocumentID,
             title: currentDocumentID,
             replacment: true,
+            dataCollection: localDataCollection,
           ),
         ),
       );
     } else if (widget.from == 'univ') {
-      StaticVars.isClicked = false;
+      localDataCollection.isClicked = false;
       //to refell the list again
-      StaticVars.streemList = null;
+      localDataCollection.streemList = null;
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -157,6 +170,7 @@ class _CardBuilderState extends State<CardBuilder> {
             title: currentDocumentID,
             from: '',
             isLab: true,
+            dataCollection: localDataCollection,
           ),
         ),
       );

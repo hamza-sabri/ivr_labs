@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ivr_labs/data_collection.dart';
 import 'package:ivr_labs/database_helper.dart';
 import 'package:ivr_labs/builder.dart';
 
@@ -9,9 +10,11 @@ this class is just to lunch the app
 and to handel which page goes first
 */
 class MyApp extends StatelessWidget {
+  final DataCollection dataCollection = DataCollection();
   @override
   Widget build(BuildContext context) {
-  final DataBaseHelper _helper = new DataBaseHelper();
+    
+  final DataBaseHelper _helper = new DataBaseHelper(dataCollection);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: _homePage(_helper),
@@ -41,6 +44,7 @@ class MyApp extends StatelessWidget {
       from: 'univ',
       title: snapShots.data == 'univ' ? 'universities' : snapShots.data,
       replacment: (snapShots.data != 'univ'),
+      dataCollection: dataCollection,
     );
   }
 }

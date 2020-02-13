@@ -1,16 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ivr_labs/data_collection.dart';
 import 'package:ivr_labs/faviarot.dart';
 import 'package:ivr_labs/paths.dart';
 import 'package:ivr_labs/pdf_reader.dart';
 import 'package:ivr_labs/validation.dart';
-import 'package:ivr_labs/var.dart';
 
 class Expviewer extends StatefulWidget {
   final List<DocumentSnapshot> documentsOfExperiments;
   final String college, labName, university, imageLink;
   final List<Paths> paths;
-  static bool deletingFlag = false, later = false;
+  final DataCollection dataCollection;
 
   Expviewer({
     this.paths,
@@ -19,6 +19,7 @@ class Expviewer extends StatefulWidget {
     this.documentsOfExperiments,
     this.university,
     this.imageLink,
+    @required this.dataCollection,
   });
 
   @override
@@ -26,6 +27,14 @@ class Expviewer extends StatefulWidget {
 }
 
 class _ExpviewerState extends State<Expviewer> {
+  DataCollection localDataCollection;
+
+  @override
+  void initState() {
+    super.initState();
+    localDataCollection = widget.dataCollection;
+  }
+
   @override
   Widget build(BuildContext context) {
     final GeneralMethods _generalMethods = new GeneralMethods(
@@ -33,6 +42,7 @@ class _ExpviewerState extends State<Expviewer> {
       documentsOfExperiments: widget.documentsOfExperiments,
       paths: widget.paths,
       labName: widget.labName,
+      dataCollection: localDataCollection,
     );
     if (_generalMethods.hadChanges()) {
       _generalMethods.createDialog(context);
@@ -48,30 +58,32 @@ class _ExpviewerState extends State<Expviewer> {
   }
 
   Widget _myFav() {
-    bool isDownloaded = StaticVars.downloadedLabs.contains(widget.labName);
+    bool isDownloaded =
+        localDataCollection.downloadedLabs.contains(widget.labName);
     return FaviarotCreator(
       isDownloaded: isDownloaded,
       labName: widget.labName,
+      dataCollection: localDataCollection,
     );
   }
 
   Widget _myBody() {
     return PDFFileReader(
-      university: widget.university,
-      paths: widget.paths,
-      college: widget.college,
-      labName: widget.labName,
-      fav: _myFav(),
-      imageLink: widget.imageLink,
-    );
+        university: widget.university,
+        paths: widget.paths,
+        college: widget.college,
+        labName: widget.labName,
+        fav: _myFav(),
+        imageLink: widget.imageLink,
+        dataCollection: localDataCollection);
   }
 
   Future<bool> _back(_generalMethods) async {
-    StaticVars.isClicked = false;
-    if (Expviewer.deletingFlag) {
+    localDataCollection.isClicked = false;
+    if (localDataCollection.deletingFlag) {
       _generalMethods.deletePaths();
     }
-    Expviewer.later = false;
+    localDataCollection.later = false;
     return true;
   }
 }

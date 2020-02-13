@@ -3,10 +3,10 @@ import 'dart:math';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ivr_labs/data_collection.dart';
 import 'package:ivr_labs/paths.dart';
 import 'package:ivr_labs/pdf_viewer.dart';
 import 'package:ivr_labs/pdf_viewer_with_fab.dart';
-import 'package:ivr_labs/var.dart';
 import 'package:ivr_labs/youtube_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
@@ -20,6 +20,7 @@ class PDFFileReader extends StatefulWidget {
   final String university;
   final List<Paths> paths;
   final Widget fav;
+  final DataCollection dataCollection;
 
   PDFFileReader(
       {this.university,
@@ -27,6 +28,7 @@ class PDFFileReader extends StatefulWidget {
       this.labName,
       this.paths,
       this.fav,
+      this.dataCollection,
       this.imageLink});
 
   @override
@@ -44,14 +46,22 @@ class _PDFFileReaderState extends State<PDFFileReader> {
   );
 
   var context;
+  DataCollection _localDataCollection;
+
+  @override
+  void initState() {
+    super.initState();
+    _localDataCollection = widget.dataCollection;
+  }
 
   @override
   Widget build(BuildContext context) {
     this.context = context;
     return WillPopScope(
+      key: GlobalKey(),
       child: _myFutureCardsList(),
       onWillPop: () async {
-        StaticVars.isClicked = false;
+        _localDataCollection.isClicked = false;
         return true;
       },
     );
