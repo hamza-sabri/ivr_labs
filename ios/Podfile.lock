@@ -277,7 +277,7 @@ PODS:
     - Flutter
   - share (0.5.2):
     - Flutter
-  - youtube_player (0.0.1):
+  - webview_flutter (0.0.1):
     - Flutter
 
 DEPENDENCIES:
@@ -288,7 +288,7 @@ DEPENDENCIES:
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - share (from `.symlinks/plugins/share/ios`)
-  - youtube_player (from `.symlinks/plugins/youtube_player/ios`)
+  - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
 
 SPEC REPOS:
   trunk:
@@ -326,8 +326,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
-  youtube_player:
-    :path: ".symlinks/plugins/youtube_player/ios"
+  webview_flutter:
+    :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
   abseil: 18063d773f5366ff8736a050fe035a28f635fd27
@@ -354,8 +354,8 @@ SPEC CHECKSUMS:
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
-  share: 7d22fe8baedfe93aefd864bf0b73f29711fbb0a3
-  youtube_player: 66aa84ca8819ad8ef7305299c2ee31ccf42121a1
+  share: bae0a282aab4483288913fc4dc0b935d4b491f2e
+  webview_flutter: bec7599de6bfbe8008a739aa3ebd7b364ea9d0cd
 
 PODFILE CHECKSUM: 3dbe063e9c90a5d7c9e4e76e70a821b9e2c1d271
 
