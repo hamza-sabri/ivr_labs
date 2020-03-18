@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:ivr_labs/custom_string.dart';
 import 'package:ivr_labs/data_collection.dart';
 import 'package:ivr_labs/paths.dart';
 import 'package:path_provider/path_provider.dart';
@@ -12,15 +13,20 @@ class DataBaseHelper {
     _labHandler();
   }
   //to handel the student goes to which university
-  Future<String> universityHanddler() async {
+  Future<CustomString> universityHanddler() async {
     var dir = await getApplicationDocumentsDirectory();
     Hive.init('${dir.path}/hive');
+    var names = await Hive.openBox('names');
     Box universityBox = await Hive.openBox('universityName');
     String temp = universityBox.get('university_name');
     if (temp == null || temp == '') {
       universityBox.put('university_name', 'univ');
     }
-    return universityBox.get('university_name');
+    if(!names.containsKey(universityBox.get('university_name'))){
+      names.put(universityBox.get('university_name'), 'الجامعات');
+    }
+    return new CustomString (title:names.get(universityBox.get('university_name')),university: universityBox.get('university_name'));
+
   }
 
   //when we are waiting hive to lunch and retrive data we call this method with any title we want
@@ -43,7 +49,6 @@ class DataBaseHelper {
       Hive.registerAdapter(PathsAdapter(), 0);
     } catch (e) {}
     var box = await Hive.openBox('labs');
-
     List temp = box.get('d');
     if (temp == null) {
       temp = [];

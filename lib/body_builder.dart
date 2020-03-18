@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:ivr_labs/card_builder.dart';
 import 'package:ivr_labs/data_collection.dart';
 import 'package:ivr_labs/lab_name_builder.dart';
-import 'breathing_animation.dart';
 
 class BodyBuilder extends StatefulWidget {
   final String college, university, from;
@@ -114,16 +114,22 @@ class _BodyBuilderState extends State<BodyBuilder> {
 
   Widget _customContainer(document) {
     String path = document['image'];
-    String labName = document.documentID;
-
-    return BreathingAnimation(
-      width: mySquare,
-      height: _dynamicHeight(),
-      myChild: SizedBox(
-        width: mySquare + 2,
-        height: _dynamicHeight() + 2,
-        child: _customCard(path, document, labName),
-      ),
+    String labName = document['name'];
+    _saveme(labName,document.documentID);
+    if (widget.college != null && widget.college != '') {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(0, 0, 6, 0),
+        child: SizedBox(
+          width: mySquare + 2,
+          height: _dynamicHeight() + 2,
+          child: _customCard(path, document, labName),
+        ),
+      );
+    }
+    return SizedBox(
+      width: mySquare + 2,
+      height: _dynamicHeight() + 2,
+      child: _customCard(path, document, labName),
     );
   }
 
@@ -156,4 +162,11 @@ class _BodyBuilderState extends State<BodyBuilder> {
         ? mySquare - 100
         : mySquare;
   }
+
+
+  void _saveme(String labName , String labID){
+  final Box box = Hive.box('names');
+  labID = localDataCollection.dumMap(labID);
+  box.put(labID, labName);
+}
 }

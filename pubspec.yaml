@@ -63,7 +63,6 @@ flutter:
     - lib/photos/report.png
     - lib/photos/cat_loading.gif
     - lib/photos/lamb_loading.gif
-    - lib/photos/lab_image.jpg
     - lib/photos/lab_loading.gif
     - lib/photos/icon.jpg
   

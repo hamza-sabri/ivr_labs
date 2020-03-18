@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:ivr_labs/data_collection.dart';
 import 'package:ivr_labs/paths.dart';
 import 'package:ivr_labs/pdf_viewer.dart';
@@ -16,16 +17,17 @@ this class returns a card when clicked opens the page PDF_Viewer_FAB
 */
 
 class PDFFileReader extends StatefulWidget {
-  final String college, labName, imageLink;
+  final String college, labID, imageLink;
   final String university;
   final List<Paths> paths;
   final Widget fav;
   final DataCollection dataCollection;
+  final realLabNameBox = Hive.box('names');
 
   PDFFileReader(
       {this.university,
       this.college,
-      this.labName,
+      this.labID,
       this.paths,
       this.fav,
       this.dataCollection,
@@ -96,7 +98,7 @@ class _PDFFileReaderState extends State<PDFFileReader> {
   _mySliver() {
     return SliverAppBar(
       title: Text(
-        widget.labName,
+        widget.realLabNameBox.get(_localDataCollection.dumMap(widget.labID)),//the name of the lab will go here
         style: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
@@ -152,7 +154,7 @@ class _PDFFileReaderState extends State<PDFFileReader> {
       var bytes = data.bodyBytes;
       var dir = await getApplicationDocumentsDirectory();
       File file = File(
-          "${dir.path}/expirimen${widget.college}${widget.labName}$expName.pdf");
+          "${dir.path}/expirimen${widget.college}${widget.labID}$expName.pdf");
       File urlPdf = await file.writeAsBytes(bytes);
       return urlPdf;
     } catch (e) {
@@ -166,7 +168,7 @@ class _PDFFileReaderState extends State<PDFFileReader> {
       var bytes = data.bodyBytes;
       var dir = await getApplicationDocumentsDirectory();
       File file = File(
-          "${dir.path}/report${widget.college}${widget.labName}$expName.pdf");
+          "${dir.path}/report${widget.college}${widget.labID}$expName.pdf");
       File urlPdf = await file.writeAsBytes(bytes);
       return urlPdf;
     } catch (e) {
@@ -263,7 +265,7 @@ class _PDFFileReaderState extends State<PDFFileReader> {
           .collection('colleges')
           .document(widget.college)
           .collection('labs')
-          .document(widget.labName)
+          .document(widget.labID)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -344,8 +346,8 @@ class _PDFFileReaderState extends State<PDFFileReader> {
           child: widget.fav,
         ),
         Positioned(
-          top: 35,
-          left: 18,
+          top: 45,
+          left: 12,
           child: InkWell(
             onTap: () {
               Navigator.pop(context);

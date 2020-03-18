@@ -112,7 +112,7 @@ class _MyBuilderState extends State<MyBuilder> {
   void _changeHandler(String value) {
     localDataCollection.searchingList = [];
     for (var doc in localDataCollection.streemList) {
-      if (doc.documentID.contains(value)) {
+      if (doc['name'].contains(value)) {
         localDataCollection.searchingList.add(doc);
       }
     }
@@ -140,7 +140,7 @@ class _MyBuilderState extends State<MyBuilder> {
                 dataCollection: localDataCollection,
                 university: 'univ',
                 from: 'univ',
-                title: 'universities',
+                title: 'الجامعات',
               ),
             ),
           );

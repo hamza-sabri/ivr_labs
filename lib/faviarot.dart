@@ -8,11 +8,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
 
 class FaviarotCreator extends StatefulWidget {
-  final String labName;
+  final String labID;
   final bool isDownloaded;
   final DataCollection dataCollection;
   FaviarotCreator({
-    this.labName,
+    this.labID,
     this.isDownloaded,
     @required this.dataCollection,
   });
@@ -25,7 +25,7 @@ class FaviarotCreator extends StatefulWidget {
  * every method is simple and explains it selfe from the name
  */
 class _FaviarotCreatorState extends State<FaviarotCreator> {
-  String labName;
+  String labID;
   bool isDownloaded;
   List<Paths> paths;
   bool loop = true;
@@ -52,7 +52,7 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
   _getSuper() {
     box = Hive.box('labs');
     labsList = Hive.box('pathsLists');
-    labName = widget.labName;
+    labID = widget.labID;
     isDownloaded = widget.isDownloaded;
     paths = paths;
   }
@@ -82,8 +82,8 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
   }
 
   Future<bool> _deleteFilesFromDB() async {
-    _generalMethods.toastMaker('deleting');
-    localDataCollection.downloadedLabs.remove(labName);
+    _generalMethods.toastMaker('جاري حذف المختبر');
+    localDataCollection.downloadedLabs.remove(labID);
     box.put('d', localDataCollection.downloadedLabs);
     isDownloaded = !isDownloaded;
     loop = false;
@@ -92,7 +92,7 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
   }
 
   Future<bool> _downloadHandler() async {
-    if (labName != null && !isDownloaded) {
+    if (labID != null && !isDownloaded) {
       paths = localDataCollection.paths;
       _startDownloading();
     }
@@ -101,23 +101,23 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
   }
 
   Future<void> _startDownloading() async {
-    _generalMethods.toastMaker('downloading');
+    _generalMethods.toastMaker('جاري التحميل');
     localDataCollection.deletingFlag = false;
     for (var path in paths) {
       try {
-              // to prevent opening a new lab while downloading
+      // to prevent opening a new lab while downloading
       localDataCollection.isClicked = true;
         if (loop) {
           await _downloadingFiles(path.expLink, 'exp', path);
           await _downloadingFiles(path.reportLink, 'report', path);
           if (loop == false) {
-            _generalMethods.toastMaker('downloading had been cut');
+            _generalMethods.toastMaker('تم قطع التحميل');
             break;
           }
         }
       } catch (e) {}
-      _generalMethods.toastMaker('exp ${path.expNumber} has been  downladed');
-     
+      _generalMethods.toastMaker('تم تحميل التجربة رقم (${path.expNumber})');
+
     }
      //to enable opening labs after downloading
       localDataCollection.isClicked = false;
@@ -127,12 +127,15 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
   }
 
   void _adder() {
-    _generalMethods.toastMaker('lab has been downloaded successfully');
-    localDataCollection.downloadedLabs.add(labName);
-    localDataCollection.currentLabName = labName;
+    final namesBox = Hive.box('names');
+    String name = namesBox.get(localDataCollection.dumMap(labID));
+    _generalMethods.toastMaker('تم تحميل \"$name\" بنجاح');
+    localDataCollection.downloadedLabs.add(labID);
+    localDataCollection.currentLabName = labID;
     box.put('d', localDataCollection.downloadedLabs);
-    labsList.put(labName.hashCode, paths);
+    labsList.put(labID.hashCode, paths);
     localDataCollection.add();
+
   }
 
   Future<void> _downloadingFiles(String url, String type, Paths path) async {
@@ -144,7 +147,7 @@ class _FaviarotCreatorState extends State<FaviarotCreator> {
     String savedPath;
     try {
       var dir = await getApplicationDocumentsDirectory();
-      savedPath = '${dir.path}/$labName${path.expName}$type.pdf';
+      savedPath = '${dir.path}/$labID${path.expName}$type.pdf';
       await dio.download(url, savedPath, onReceiveProgress: (rec, total) {});
       type == 'exp' ? path.expPath = savedPath : path.reportPath = savedPath;
     

@@ -8,14 +8,14 @@ import 'package:ivr_labs/validation.dart';
 
 class Expviewer extends StatefulWidget {
   final List<DocumentSnapshot> documentsOfExperiments;
-  final String college, labName, university, imageLink;
+  final String college, labID, university, imageLink;
   final List<Paths> paths;
   final DataCollection dataCollection;
 
   Expviewer({
     this.paths,
     this.college,
-    this.labName,
+    this.labID,
     this.documentsOfExperiments,
     this.university,
     this.imageLink,
@@ -41,7 +41,7 @@ class _ExpviewerState extends State<Expviewer> {
       context: context,
       documentsOfExperiments: widget.documentsOfExperiments,
       paths: widget.paths,
-      labName: widget.labName,
+      labID: widget.labID,//this is the ID from the firebase
       dataCollection: localDataCollection,
     );
     if (_generalMethods.hadChanges()) {
@@ -59,10 +59,10 @@ class _ExpviewerState extends State<Expviewer> {
 
   Widget _myFav() {
     bool isDownloaded =
-        localDataCollection.downloadedLabs.contains(widget.labName);
+        localDataCollection.downloadedLabs.contains(widget.labID);
     return FaviarotCreator(
       isDownloaded: isDownloaded,
-      labName: widget.labName,
+      labID: widget.labID,
       dataCollection: localDataCollection,
     );
   }
@@ -72,7 +72,7 @@ class _ExpviewerState extends State<Expviewer> {
         university: widget.university,
         paths: widget.paths,
         college: widget.college,
-        labName: widget.labName,
+        labID: widget.labID,
         fav: _myFav(),
         imageLink: widget.imageLink,
         dataCollection: localDataCollection);

@@ -2,18 +2,19 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive/hive.dart';
 import 'package:ivr_labs/data_collection.dart';
 import 'package:ivr_labs/paths.dart';
 
 class GeneralMethods {
   final String universityName, collegeName;
-  String labName;
+  String labID;
   final TextStyle style = TextStyle(
     color: Colors.white,
     fontSize: 12,
   );
   final String massage =
-      'هذا المختبر تنقصه بعض البانات التي تم اضافتها مؤخرا هل ترغب بمزامنة المختبر ؟';
+      'هذا المختبر تنقصه بعض البيانات التي تم اضافتها مؤخرا هل ترغب بمزامنة المختبر ؟';
 
   final TextStyle massageStyle = TextStyle(
     color: Colors.black,
@@ -22,8 +23,9 @@ class GeneralMethods {
   final context, documentsOfExperiments, paths;
 
   final DataCollection dataCollection;
+
   GeneralMethods({
-    this.labName,
+    this.labID,
     this.context,
     this.documentsOfExperiments,
     this.paths,
@@ -81,7 +83,7 @@ class GeneralMethods {
         .collection('colleges')
         .document(collegeName)
         .collection('labs')
-        .document(labName)
+        .document(labID)
         .collection('exp')
         .document(id)
         .setData({
@@ -135,13 +137,15 @@ class GeneralMethods {
   Future<void> deletePaths() async {
     await _deleteHandler();
     if (!syncronisingLap) {
-      toastMaker('lab has been deleted successfully');
+    final namesBox = Hive.box('names');
+    String name = namesBox.get(dataCollection.dumMap(labID));
+      toastMaker('تم حذف $name بنجاح');
     } else {
       toastMaker('تمت المزامنة بنجاح يمكنك الان اعادة تحميل المختبر');
     }
-    dataCollection.labsMap.remove(labName);
+    dataCollection.labsMap.remove(labID);
     dataCollection.currentLabName = null;
-    dataCollection.downloadedLabs.remove(labName);
+    dataCollection.downloadedLabs.remove(labID);
     dataCollection.deletingFlag = false;
   }
 
@@ -159,7 +163,6 @@ class GeneralMethods {
           await reportDir.deleteSync(recursive: true);
         }
       } catch (e) {
-        print('deletion error');
       }
     }
   }
@@ -168,7 +171,7 @@ class GeneralMethods {
   bool hadChanges() {
     //if the user selected later the dialog will not appear
     if (dataCollection.later) return false;
-    List<Paths> list = dataCollection.labsMap[labName];
+    List<Paths> list = dataCollection.labsMap[labID];
     if (list == null) return false;
     if (list.length != documentsOfExperiments.length) return true;
     for (int i = 0; i < list.length; i++) {
@@ -232,7 +235,7 @@ class GeneralMethods {
           }),
         ),
         _customButton('بدء المزامنة', () {
-          dataCollection.downloadedLabs.remove(labName);
+          dataCollection.downloadedLabs.remove(labID);
           _syncHandler(context);
         }),
       ],

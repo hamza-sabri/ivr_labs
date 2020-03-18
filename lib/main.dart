@@ -28,10 +28,10 @@ class MyApp extends StatelessWidget {
       future: _helper.universityHanddler(),
       builder: (context, snapShots) {
         if (snapShots.connectionState == ConnectionState.waiting) {
-          return _helper.hiveHandler('universities');
+          return _helper.hiveHandler('الجامعات');
         }
         if (snapShots.hasError) {
-          return _helper.hiveHandler('No Internet!!!');
+          return _helper.hiveHandler('لا يوجد اتصال بالانترنت');
         }
         return _mainPage(snapShots);
       },
@@ -41,10 +41,10 @@ class MyApp extends StatelessWidget {
   //calling MyBuilder class with the right attriputes
   Widget _mainPage(var snapShots) {
     return MyBuilder(
-      university: snapShots.data,
+      university: snapShots.data.university,
       from: 'univ',
-      title: snapShots.data == 'univ' ? 'universities' : snapShots.data,
-      replacment: (snapShots.data != 'univ'),
+      title: snapShots.data.title,
+      replacment: (snapShots.data.university != 'univ'),
       dataCollection: dataCollection,
     );
   }

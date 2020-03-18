@@ -50,10 +50,15 @@ class _CardBuilderState extends State<CardBuilder> {
     return Center(
       child: InkWell(
         onTap: () {
+          final GeneralMethods methods = GeneralMethods(dataCollection: null); 
           if (!localDataCollection.isClicked) {
+            if(widget.college != null && widget.college != '')
+             methods.toastMaker(
+                'المختبر قيد التحضير الرجاء الانتظار ... ');
+
             _pathSetter(widget.document);
           } else {
-            GeneralMethods methods = GeneralMethods(dataCollection: null);
+
             methods.toastMaker(
                 'لا يمكن فتح أكثر من مختبر في نفس الوقت ... الرجاء الانتظار حتى الانتهاء من تحميل المختبر الحالي');
           }
@@ -67,17 +72,18 @@ class _CardBuilderState extends State<CardBuilder> {
 
   void _pathSetter(document) {
     String currentDocumentID = document.documentID;
+    String currentName = document['name'];
     localDataCollection.isClicked = true;
-    _dynamicIVR(currentDocumentID);
-    _gettingDataFromFireBase(document, currentDocumentID);
+    _dynamicIVR(currentDocumentID,currentName);
+    _gettingDataFromFireBase(document, currentDocumentID,currentName);
   }
 
-  void _gettingDataFromFireBase(document, String currentDocumentID) {
+  void _gettingDataFromFireBase(document, String currentDocumentID,String currentLabName) {
     if (widget.university == 'univ' || widget.from == 'univ') return;
     Future<QuerySnapshot> d = _getPath(currentDocumentID);
     d.then((onValue) {
       if (localDataCollection.currentLabName == null ||
-          localDataCollection.currentLabName != currentDocumentID) {
+          localDataCollection.currentLabName != currentLabName) {
         localDataCollection.add();
         if (localDataCollection.contains(currentDocumentID)) {
           localDataCollection
@@ -119,7 +125,7 @@ class _CardBuilderState extends State<CardBuilder> {
           child: Expviewer(
             university: widget.university,
             college: widget.college,
-            labName: localDataCollection.currentLabName,
+            labID: localDataCollection.currentLabName,
             paths: localDataCollection.paths,
             documentsOfExperiments: documents,
             imageLink: imageLink,
@@ -144,7 +150,7 @@ class _CardBuilderState extends State<CardBuilder> {
     }
   }
 
-  void _dynamicIVR(String currentDocumentID) {
+  void _dynamicIVR(String currentDocumentID,String title) {
     if (widget.university == 'univ') {
       localDataCollection.isClicked = false;
       Box universityBox = Hive.box('universityName');
@@ -156,7 +162,7 @@ class _CardBuilderState extends State<CardBuilder> {
           builder: (context) => new MyBuilder(
             from: widget.university,
             university: currentDocumentID,
-            title: currentDocumentID,
+            title: title,
             replacment: true,
             dataCollection: localDataCollection,
           ),
@@ -172,7 +178,7 @@ class _CardBuilderState extends State<CardBuilder> {
           builder: (context) => new MyBuilder(
             college: currentDocumentID,
             university: widget.university,
-            title: currentDocumentID,
+            title: title,
             from: '',
             isLab: true,
             dataCollection: localDataCollection,
@@ -182,6 +188,7 @@ class _CardBuilderState extends State<CardBuilder> {
     }
   }
 
+//this method is to get the data from the firebase
   Future<QuerySnapshot> _getPath(String currentDocumentID) {
     return Firestore.instance
         .collection('univ')
