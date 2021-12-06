@@ -47,5 +47,8 @@ To support both Andriod and IOs I used the framework **Flutter (Dart)**. And to 
 
 ## Future work
 
-The application had a great start, better than the one I planned for it to be honest. But I didn't keep up with the demand and didn't upload enough materials to the database which resulted in the app not being useful as it used to be. Thus I need a better way of inserting new labs and allowing more people to contribute to the data set we provide in the application.
+The application had a great start, better than the one I planned for it to be honest. 
+But I didn't keep up with the demand and didn't upload enough materials to the database which resulted in the app not being useful as it used to be. 
+
+Thus I need a better way of inserting new labs and allowing more people to contribute to the data set we provide in the application.
 
