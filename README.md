@@ -19,8 +19,6 @@ At first, I didn't know what to build exactly I had a small idea in my mind to m
 ## App 
 **You can find and download the app by clicking [here](https://play.google.com/store/apps/details?id=com.ivr.ivr_labs&hl=en&gl=US).**
 
-
-## Pages
 <img src="https://play-lh.googleusercontent.com/FyBt66vD7Ug8ds7nj-Z60NWiP6D7LsQ5lWniSooTHnjyieE85B_oDCBEIKMsMyPY1g=s360-rw" width=220 /> 
 <div>
 <img src="https://play-lh.googleusercontent.com/t4g6bXASXlhInJ4umn6JZqUPNu3NFj4Hm5oQ4Sm-BUZs5kqJjvgkl7GVs8IJok-Pi0I=w1440-h620-rw" width=220 /> 
@@ -28,8 +26,6 @@ At first, I didn't know what to build exactly I had a small idea in my mind to m
 <img src="https://play-lh.googleusercontent.com/9DzxPTGoWX1yJWi9bplC-5wxlgSy2UNZWS9srxFVy713Ml4OLLxOQL-m2F22JEgrJA=w1440-h620-rw" width=220/> 
 <img src="https://play-lh.googleusercontent.com/Wim_JZBfq3W_jsxhJivIJ21Xul1AEKFDOm-F3qmw-ucoUGKoOPssm63rGmkgBTg64A=w1440-h620-rw" width=220/> 
 </div>
-
-
 
 
 ## Features
@@ -44,4 +40,12 @@ The point of this application is to help us students pass the labs with minimal 
 * Download labs to browse them offline
 * Contribute button to help increase the amount of data presented in the app (appears only for admins)
 * Sharring reports
+
+## Implementation
+
+To support both Andriod and IOs I used the framework **Flutter (Dart)**. And to keep track of all the data I built the backend using **Firebase**.
+
+## Future work
+
+The application had a great start, better than the one I planned for it to be honest. But I didn't keep up with the demand and didn't upload enough materials to the database which resulted in the app not being useful as it used to be. Thus I need a better way of inserting new labs and allowing more people to contribute to the data set we provide in the application.
 
